@@ -10,3 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Project scaffolding: XcodeGen project, CI, license and documentation.
+- Island window aligned with the notch, with a virtual island on displays without one.
+- Expansion on hover (adjustable delay) or click, with spring animations.
+- Option to show the island on the built-in display, the main display or all displays.
+- Island hidden while an app is in full screen (optional).
+- Settings window (General, Island), menu bar icon (optional) and launch at login.
+- English and French localization.

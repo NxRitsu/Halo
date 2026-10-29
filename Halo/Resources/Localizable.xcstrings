@@ -1,6 +1,206 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ Settings" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages de %@"
+          }
+        }
+      }
+    },
+    "All displays" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les écrans"
+          }
+        }
+      }
+    },
+    "Allow %@ in System Settings → General → Login Items & Extensions." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez %@ dans Réglages Système → Général → Ouverture et extensions."
+          }
+        }
+      }
+    },
+    "Built-in display" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran intégré"
+          }
+        }
+      }
+    },
+    "Expand on hover" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrandir au survol"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Général"
+          }
+        }
+      }
+    },
+    "Hide in full screen" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer en plein écran"
+          }
+        }
+      }
+    },
+    "Hover delay" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Délai de survol"
+          }
+        }
+      }
+    },
+    "Island" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Île"
+          }
+        }
+      }
+    },
+    "Launch at login" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir à l’ouverture de session"
+          }
+        }
+      }
+    },
+    "Main display" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran principal"
+          }
+        }
+      }
+    },
+    "On displays without a notch, a virtual island is shown at the top of the screen." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur les écrans sans encoche, une île virtuelle s’affiche en haut de l’écran."
+          }
+        }
+      }
+    },
+    "Project on GitHub" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projet sur GitHub"
+          }
+        }
+      }
+    },
+    "Quit %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter %@"
+          }
+        }
+      }
+    },
+    "s" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "s"
+          }
+        }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages…"
+          }
+        }
+      }
+    },
+    "Show menu bar icon" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l’icône dans la barre des menus"
+          }
+        }
+      }
+    },
+    "Show the island on" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l’île sur"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        }
+      }
+    },
+    "You can always right-click the island to open the settings." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic droit sur l’île permet toujours d’ouvrir les réglages."
+          }
+        }
+      }
+    }
   },
   "version" : "1.0"
 }
