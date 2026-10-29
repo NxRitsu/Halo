@@ -1,0 +1,35 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics report
+      description: Open Halo's Settings → Diagnostics → "Copy report", then paste it here. It contains no personal data.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model and displays
+      placeholder: e.g. MacBook Pro 14" (2024) + external 4K display
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings

@@ -1,0 +1,9 @@
+// Copy this file to `Local.xcconfig` (ignored by git) to sign with your own identity.
+// Without it, Halo is signed ad hoc ("-"), which is enough to build and run locally.
+//
+// Signing with a stable identity is recommended during development: with ad hoc
+// signing, macOS may ask again for permissions (Bluetooth, location...) after each build.
+
+DEVELOPMENT_TEAM = ABCDE12345
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic

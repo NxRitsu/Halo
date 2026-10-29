@@ -1,0 +1,7 @@
+// Shared build settings. Machine-specific overrides live in the git-ignored Local.xcconfig.
+
+CODE_SIGN_IDENTITY = -
+CODE_SIGN_STYLE = Manual
+DEVELOPMENT_TEAM =
+
+#include? "../Local.xcconfig"
