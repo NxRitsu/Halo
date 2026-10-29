@@ -8,6 +8,11 @@ import SwiftUI
 /// and SwiftUI animates the shape inside it; when collapsing, the panel shrinks once the
 /// animation has finished.
 ///
+/// The SwiftUI view itself keeps the expanded size, pinned at the top center of the island:
+/// the panel only acts as a viewport around it. SwiftUI therefore never sees a size change,
+/// which would otherwise be animated (the island would grow from a corner) and can loop on
+/// constraint updates when the hosting view is the panel's content view.
+///
 /// Resizing the panel rebuilds its tracking area, which can emit a spurious "exited" event while
 /// the cursor is still inside. So once expanded, the island decides when to collapse from the
 /// actual cursor position, using mouse-moved monitors that only exist while it is expanded.
@@ -20,6 +25,7 @@ final class IslandWindowController {
     let displayID: CGDirectDisplayID
     private let panel: IslandPanel
     private let model: IslandModel
+    private let hostingView: IslandHostingView<IslandView>
     private var pendingTransition: Task<Void, Never>?
     private var isHidden = false
     private var mouseMonitors: [Any] = []
@@ -30,19 +36,17 @@ final class IslandWindowController {
         model = IslandModel(metrics: metrics)
         panel = IslandPanel(contentRect: metrics.windowFrame(for: metrics.compact))
 
-        let hostingView = IslandHostingView(rootView: IslandView(model: model))
+        hostingView = IslandHostingView(rootView: IslandView(model: model))
+        hostingView.translatesAutoresizingMaskIntoConstraints = true
+        let container = NSView(frame: NSRect(origin: .zero, size: panel.frame.size))
+        container.autoresizesSubviews = false
+        container.addSubview(hostingView)
+        panel.contentView = container
+        layoutHostingView()
+
         hostingView.onHoverChange = { [weak self] inside in
             self?.hoverChanged(inside)
         }
-        // A hosting view used directly as the content view of a window that is resized during
-        // a SwiftUI animation can loop on constraint updates until AppKit raises an exception.
-        // Embedding it in a plain container that drives its frame by autoresizing avoids that.
-        let container = NSView(frame: NSRect(origin: .zero, size: panel.frame.size))
-        hostingView.frame = container.bounds
-        hostingView.autoresizingMask = [.width, .height]
-        hostingView.translatesAutoresizingMaskIntoConstraints = true
-        container.addSubview(hostingView)
-        panel.contentView = container
         model.onTap = { [weak self] in
             self?.expand()
         }
@@ -71,7 +75,20 @@ final class IslandWindowController {
         let metrics = IslandMetrics(screen: screen)
         guard metrics != model.metrics else { return }
         model.metrics = metrics
-        panel.setFrame(metrics.windowFrame(for: model.layout), display: true)
+        setPanelFrame(for: model.layout)
+    }
+
+    /// Resizes the panel around the island and keeps the hosting view fixed on screen.
+    private func setPanelFrame(for layout: IslandLayout) {
+        panel.setFrame(model.metrics.windowFrame(for: layout), display: true)
+        layoutHostingView()
+    }
+
+    /// Places the hosting view at its expanded frame, in the panel's coordinates.
+    private func layoutHostingView() {
+        let expandedFrame = model.metrics.windowFrame(for: model.metrics.expanded)
+        let origin = NSPoint(x: expandedFrame.minX - panel.frame.minX, y: expandedFrame.minY - panel.frame.minY)
+        hostingView.frame = NSRect(origin: origin, size: expandedFrame.size)
     }
 
     func setHidden(_ hidden: Bool) {
@@ -81,7 +98,7 @@ final class IslandWindowController {
             cancelPendingTransition()
             stopMouseMonitors()
             model.isExpanded = false
-            panel.setFrame(model.metrics.windowFrame(for: model.metrics.compact), display: false)
+            setPanelFrame(for: model.metrics.compact)
             panel.orderOut(nil)
         } else {
             panel.orderFrontRegardless()
@@ -147,7 +164,7 @@ final class IslandWindowController {
     private func expand() {
         cancelPendingTransition()
         guard !model.isExpanded, !isHidden else { return }
-        panel.setFrame(model.metrics.windowFrame(for: model.metrics.expanded), display: true)
+        setPanelFrame(for: model.metrics.expanded)
         withAnimation(Self.expandAnimation) {
             model.isExpanded = true
         }
@@ -161,7 +178,7 @@ final class IslandWindowController {
             model.isExpanded = false
         } completion: { [weak self] in
             guard let self, !self.model.isExpanded else { return }
-            self.panel.setFrame(self.model.metrics.windowFrame(for: self.model.metrics.compact), display: true)
+            self.setPanelFrame(for: self.model.metrics.compact)
         }
     }
 
