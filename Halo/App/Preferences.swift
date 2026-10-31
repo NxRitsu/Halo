@@ -8,6 +8,7 @@ enum PreferenceKey {
     static let expandOnHover = "expandOnHover"
     static let hoverDelay = "hoverDelay"
     static let hideInFullScreen = "hideInFullScreen"
+    static let nowPlayingEnabled = "nowPlayingEnabled"
 }
 
 /// Which displays show an island.
@@ -30,6 +31,7 @@ enum Preferences {
             PreferenceKey.expandOnHover: true,
             PreferenceKey.hoverDelay: 0.15,
             PreferenceKey.hideInFullScreen: true,
+            PreferenceKey.nowPlayingEnabled: true,
         ]
     }
 
@@ -51,5 +53,9 @@ enum Preferences {
 
     static var hideInFullScreen: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.hideInFullScreen)
+    }
+
+    static var nowPlayingEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.nowPlayingEnabled)
     }
 }

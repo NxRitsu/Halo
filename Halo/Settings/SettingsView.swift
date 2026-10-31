@@ -9,6 +9,9 @@ struct SettingsView: View {
             Tab("Island", systemImage: "capsule") {
                 IslandSettingsView()
             }
+            Tab("Media", systemImage: "music.note") {
+                MediaSettingsView()
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .frame(width: 520, height: 360)
@@ -95,5 +98,51 @@ private struct IslandSettingsView: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+private struct MediaSettingsView: View {
+    @AppStorage(PreferenceKey.nowPlayingEnabled) private var nowPlayingEnabled = true
+    private let nowPlaying = AppServices.shared.nowPlaying
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Show what's playing", isOn: $nowPlayingEnabled)
+                LabeledContent("Source") {
+                    statusText
+                }
+            } footer: {
+                Text("macOS restricts access to what's playing. Halo reads it through a system process (/usr/bin/perl), or falls back to Music and Spotify only.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .onChange(of: nowPlayingEnabled) { _, enabled in
+            nowPlaying.setEnabled(enabled)
+        }
+    }
+
+    @ViewBuilder
+    private var statusText: some View {
+        switch nowPlaying.status {
+        case .disabled:
+            Text("Disabled")
+        case .starting:
+            Text("Starting…")
+        case .active(.mediaRemoteDirect):
+            Label("MediaRemote (direct)", systemImage: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+        case .active(.mediaRemoteHelper):
+            Label("MediaRemote (via system process)", systemImage: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+        case .active(.scripting):
+            Label("Music and Spotify only", systemImage: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+        case .unavailable(let reason):
+            Label("Unavailable: \(reason)", systemImage: "xmark.octagon.fill")
+                .foregroundStyle(.red)
+        }
     }
 }

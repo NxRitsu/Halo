@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Preferences.register()
+        AppServices.shared.start()
         islandManager.start()
     }
 

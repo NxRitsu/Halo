@@ -21,8 +21,8 @@ struct IslandMetrics: Equatable {
     /// Top edge of the screen, in global screen coordinates.
     let topY: CGFloat
     let scale: CGFloat
-    let compact: IslandLayout
-    let expanded: IslandLayout
+    /// The idle compact island: the notch itself, or a virtual island of similar size.
+    let base: IslandLayout
 
     init(screen: NSScreen) {
         let frame = screen.frame
@@ -39,21 +39,55 @@ struct IslandMetrics: Equatable {
             centerX = frame.minX + left.width + notchWidth / 2
             // At rest the island covers the notch exactly and stays invisible.
             // A slightly larger bottom radius than the hardware keeps the corners hidden behind it.
-            compact = IslandLayout(width: notchWidth, height: notchHeight, earRadius: 0, bottomRadius: 10)
+            base = IslandLayout(width: notchWidth, height: notchHeight, earRadius: 0, bottomRadius: 10)
         } else {
             // No notch: draw a virtual island of similar size in the menu bar.
             let menuBarHeight = frame.maxY - screen.visibleFrame.maxY
             let height = menuBarHeight > 0 ? menuBarHeight : NSStatusBar.system.thickness
             hasNotch = false
             centerX = frame.midX
-            compact = IslandLayout(width: 180, height: height, earRadius: 6, bottomRadius: 10)
+            base = IslandLayout(width: 180, height: height, earRadius: 6, bottomRadius: 10)
         }
+    }
 
-        expanded = IslandLayout(
-            width: max(compact.width + 220, 440),
-            height: compact.height + 96,
-            earRadius: 14,
-            bottomRadius: 32
+    /// Width of each side area of the compact island, left and right of the notch.
+    var wingWidth: CGFloat { base.height + 12 }
+
+    private var expandedWidth: CGFloat { max(base.width + 220, 440) }
+
+    func layout(expanded: Bool, content: IslandContent) -> IslandLayout {
+        if expanded {
+            let contentHeight: CGFloat = switch content.expanded {
+            case .idle: 96
+            case .nowPlaying: 150
+            }
+            return IslandLayout(width: expandedWidth, height: base.height + contentHeight, earRadius: 14, bottomRadius: 32)
+        }
+        if content.compactShowsMedia {
+            return IslandLayout(
+                width: base.width + wingWidth * 2,
+                height: base.height,
+                earRadius: 6,
+                bottomRadius: 12
+            )
+        }
+        return base
+    }
+
+    /// Smallest layout that contains every possible state: the size of the hosted SwiftUI view.
+    var largest: IslandLayout {
+        let all = [false, true].flatMap { expanded in
+            [IslandContent.Activity.idle, .nowPlaying].flatMap { activity in
+                [false, true].map { media in
+                    layout(expanded: expanded, content: IslandContent(expanded: activity, compactShowsMedia: media))
+                }
+            }
+        }
+        return IslandLayout(
+            width: all.map(\.totalWidth).max() ?? base.totalWidth,
+            height: all.map(\.height).max() ?? base.height,
+            earRadius: 0,
+            bottomRadius: 0
         )
     }
 

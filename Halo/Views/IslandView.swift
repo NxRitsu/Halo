@@ -11,12 +11,7 @@ struct IslandView: View {
             .fill(.black)
             .frame(width: layout.totalWidth, height: layout.height)
             .overlay(alignment: .top) {
-                if model.isExpanded {
-                    ExpandedPlaceholderView()
-                        .padding(.top, model.metrics.compact.height)
-                        .padding(.horizontal, layout.earRadius + 24)
-                        .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
-                }
+                content(layout: layout)
             }
             .clipShape(shape)
             .contentShape(shape)
@@ -32,10 +27,32 @@ struct IslandView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
+
+    @ViewBuilder
+    private func content(layout: IslandLayout) -> some View {
+        if model.isExpanded {
+            Group {
+                switch model.content.expanded {
+                case .nowPlaying:
+                    ExpandedNowPlayingView(nowPlaying: model.nowPlaying)
+                case .idle:
+                    ClockView()
+                }
+            }
+            .padding(.top, model.metrics.base.height + 8)
+            .padding(.horizontal, layout.earRadius + 22)
+            .padding(.bottom, 16)
+            .frame(width: layout.totalWidth, height: layout.height, alignment: .top)
+            .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
+        } else if model.content.compactShowsMedia {
+            CompactNowPlayingView(nowPlaying: model.nowPlaying, layout: layout, wingWidth: model.metrics.wingWidth)
+                .transition(.opacity)
+        }
+    }
 }
 
-/// Temporary content of the expanded island until activities are implemented.
-private struct ExpandedPlaceholderView: View {
+/// Expanded content when nothing else is going on.
+private struct ClockView: View {
     var body: some View {
         TimelineView(.everyMinute) { context in
             HStack(alignment: .firstTextBaseline) {

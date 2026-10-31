@@ -41,6 +41,16 @@
         }
       }
     },
+    "Disabled" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        }
+      }
+    },
     "Expand on hover" : {
       "localizations" : {
         "fr" : {
@@ -101,12 +111,62 @@
         }
       }
     },
+    "macOS restricts access to what's playing. Halo reads it through a system process (/usr/bin/perl), or falls back to Music and Spotify only." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS restreint l’accès à la lecture en cours. Halo la lit via un processus système (/usr/bin/perl), ou se limite à Musique et Spotify en dernier recours."
+          }
+        }
+      }
+    },
     "Main display" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écran principal"
+          }
+        }
+      }
+    },
+    "Media" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média"
+          }
+        }
+      }
+    },
+    "MediaRemote (direct)" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MediaRemote (direct)"
+          }
+        }
+      }
+    },
+    "MediaRemote (via system process)" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MediaRemote (via un processus système)"
+          }
+        }
+      }
+    },
+    "Music and Spotify only" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musique et Spotify uniquement"
           }
         }
       }
@@ -177,6 +237,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afficher l’île sur"
+          }
+        }
+      }
+    },
+    "Show what's playing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la lecture en cours"
+          }
+        }
+      }
+    },
+    "Source" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source"
+          }
+        }
+      }
+    },
+    "Starting…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrage…"
+          }
+        }
+      }
+    },
+    "Unavailable: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indisponible : %@"
           }
         }
       }

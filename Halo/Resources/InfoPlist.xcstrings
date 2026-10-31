@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSAppleEventsUsageDescription" : {
+      "comment" : "Privacy - AppleEvents Sending Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo controls playback in Music and Spotify when the system's now playing information is unavailable."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo contrôle la lecture dans Musique et Spotify quand les informations de lecture du système sont indisponibles."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

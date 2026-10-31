@@ -30,6 +30,11 @@ targets:
     platform: macOS
     sources:
       - path: Halo
+    dependencies:
+      # Loaded by /usr/bin/perl at runtime, not linked by the app.
+      - target: MediaRemoteHelper
+        embed: true
+        link: false
     configFiles:
       Debug: Config/Base.xcconfig
       Release: Config/Base.xcconfig
@@ -41,6 +46,11 @@ targets:
         INFOPLIST_FILE: Halo/Resources/Info.plist
         ENABLE_HARDENED_RUNTIME: YES
         COMBINE_HIDPI_IMAGES: YES
+    entitlements:
+      path: Halo/Resources/Halo.entitlements
+      properties:
+        # Only used by the Music and Spotify fallback, when MediaRemote is unavailable.
+        com.apple.security.automation.apple-events: true
     info:
       path: Halo/Resources/Info.plist
       properties:
@@ -54,6 +64,25 @@ targets:
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         LSUIElement: true
         NSHumanReadableCopyright: "MIT License"
+        NSAppleEventsUsageDescription: "Halo controls playback in Music and Spotify when the system's now playing information is unavailable."
+
+  MediaRemoteHelper:
+    type: framework
+    platform: macOS
+    sources:
+      - path: MediaRemoteHelper
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.nxritsu.Halo.MediaRemoteHelper
+        GENERATE_INFOPLIST_FILE: YES
+        CLANG_ENABLE_OBJC_ARC: YES
+        SKIP_INSTALL: YES
+        DEFINES_MODULE: NO
+        ENABLE_MODULE_VERIFIER: NO
+        GCC_SYMBOLS_PRIVATE_EXTERN: YES
 
 schemes:
   Halo:

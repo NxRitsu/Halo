@@ -16,3 +16,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Island hidden while an app is in full screen (optional).
 - Settings window (General, Island), menu bar icon (optional) and launch at login.
 - English and French localization.
+- Now Playing: artwork and equalizer around the notch, expanded player with seekable progress
+  bar and playback controls. Works with any app reporting to the system (Music, Spotify, browsers…).

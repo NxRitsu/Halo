@@ -68,11 +68,11 @@ final class IslandManager {
             if let controller = controllers[id] {
                 controller.update(screen: screen)
             } else {
-                controllers[id] = IslandWindowController(screen: screen, displayID: id)
+                controllers[id] = IslandWindowController(screen: screen, displayID: id, services: .shared)
                 let metrics = IslandMetrics(screen: screen)
                 logger.info("""
                     Island on display \(id, privacy: .public): notch=\(metrics.hasNotch, privacy: .public) \
-                    compact=\(metrics.compact.width, privacy: .public)x\(metrics.compact.height, privacy: .public) \
+                    base=\(metrics.base.width, privacy: .public)x\(metrics.base.height, privacy: .public) \
                     centerX=\(metrics.centerX, privacy: .public)
                     """)
             }

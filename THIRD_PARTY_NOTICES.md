@@ -15,5 +15,8 @@ None yet.
 
 ## Inspiration
 
-Some techniques (notch geometry, window levels) were studied in open source projects such as
-[boring.notch](https://github.com/TheBoredTeam/boring.notch). No code was copied from them.
+Some techniques were studied in open source projects. No code was copied from them:
+
+- [boring.notch](https://github.com/TheBoredTeam/boring.notch): notch geometry and window levels.
+- [mediaremote-adapter](https://github.com/ungive/mediaremote-adapter): reading now playing
+  information through `/usr/bin/perl`, which macOS still allows to use MediaRemote.
