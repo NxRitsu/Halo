@@ -10,6 +10,12 @@
 // When MediaRemote is directly accessible, Halo can instead load this library in its own process
 // and use `HaloMediaRemoteStart` and `HaloMediaRemoteSendCommand`, with the same messages.
 //
+// MediaRemote only reports one "now playing" app: the last one that started playing. When that app
+// is paused while another one keeps playing (for instance music paused while a web video plays),
+// the helper looks for a playing app among all now playing clients, reports it instead, and sends
+// commands to it. The per-client functions are undocumented; their signatures were read from the
+// MediaRemote binary on macOS 26 and they are only used when all of them can be resolved.
+//
 // Updates are driven by MediaRemote notifications (no polling). In Perl, the process exits when
 // stdin is closed, so it never outlives Halo.
 
@@ -23,6 +29,14 @@ typedef void (*MRGetNowPlayingClientFunction)(dispatch_queue_t, void (^)(id));
 typedef NSString *(*MRClientGetStringFunction)(id);
 typedef Boolean (*MRSendCommandFunction)(int, NSDictionary *);
 typedef void (*MRSetElapsedTimeFunction)(double);
+typedef void (*MRGetNowPlayingClientsFunction)(dispatch_queue_t, void (^)(NSArray *));
+typedef int (*MRClientGetProcessIdentifierFunction)(id);
+// (client, origin, queue, completion) — a nil origin means this Mac.
+typedef void (*MRGetPlaybackStateForClientFunction)(id, id, dispatch_queue_t, void (^)(unsigned int));
+// (client, origin, unknown (nil), queue, completion)
+typedef void (*MRGetNowPlayingInfoForClientFunction)(id, id, id, dispatch_queue_t, void (^)(NSDictionary *));
+// (command, options, origin, client, flags, queue, completion)
+typedef Boolean (*MRSendCommandToClientFunction)(int, NSDictionary *, id, id, unsigned long, dispatch_queue_t, void (^)(id));
 
 enum {
     MRCommandPlay = 0,
@@ -30,7 +44,10 @@ enum {
     MRCommandTogglePlayPause = 2,
     MRCommandNextTrack = 4,
     MRCommandPreviousTrack = 5,
+    MRCommandSeekToPlaybackPosition = 24,
 };
+
+static const unsigned int MRPlaybackStatePlaying = 1;
 
 static struct {
     MRRegisterForNotificationsFunction registerForNotifications;
@@ -41,6 +58,11 @@ static struct {
     MRClientGetStringFunction clientParentBundleIdentifier;
     MRSendCommandFunction sendCommand;
     MRSetElapsedTimeFunction setElapsedTime;
+    MRGetNowPlayingClientsFunction getNowPlayingClients;
+    MRClientGetProcessIdentifierFunction clientProcessIdentifier;
+    MRGetPlaybackStateForClientFunction getPlaybackStateForClient;
+    MRGetNowPlayingInfoForClientFunction getNowPlayingInfoForClient;
+    MRSendCommandToClientFunction sendCommandToClient;
 } MR;
 
 typedef void (*HaloMediaRemoteEmitFunction)(const char *json, void *context);
@@ -50,6 +72,8 @@ static HaloMediaRemoteEmitFunction emitFunction;
 static void *emitContext;
 static NSString *lastArtworkIdentifier;
 static uint64_t fetchGeneration;
+/// Client reported instead of the system's now playing app, or nil. Commands are sent to it.
+static id selectedClient;
 
 static void writeToStandardOutput(const char *json, void *context) {
     (void)context;
@@ -67,8 +91,16 @@ static void emit(NSDictionary *message) {
     emitFunction(string.UTF8String, emitContext);
 }
 
+static void *mediaRemoteHandle;
+
+/// Notification names are exported constants whose value may differ from the symbol name.
+static NSString *notificationName(NSString *symbol) {
+    CFStringRef *constant = mediaRemoteHandle ? dlsym(mediaRemoteHandle, symbol.UTF8String) : NULL;
+    return constant != NULL && *constant != NULL ? (__bridge NSString *)*constant : symbol;
+}
+
 static BOOL loadMediaRemote(void) {
-    void *handle = dlopen("/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote", RTLD_LAZY);
+    void *handle = mediaRemoteHandle = dlopen("/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote", RTLD_LAZY);
     if (handle == NULL) {
         return NO;
     }
@@ -80,6 +112,11 @@ static BOOL loadMediaRemote(void) {
     MR.clientParentBundleIdentifier = dlsym(handle, "MRNowPlayingClientGetParentAppBundleIdentifier");
     MR.sendCommand = dlsym(handle, "MRMediaRemoteSendCommand");
     MR.setElapsedTime = dlsym(handle, "MRMediaRemoteSetElapsedTime");
+    MR.getNowPlayingClients = dlsym(handle, "MRMediaRemoteGetNowPlayingClients");
+    MR.clientProcessIdentifier = dlsym(handle, "MRNowPlayingClientGetProcessIdentifier");
+    MR.getPlaybackStateForClient = dlsym(handle, "MRMediaRemoteGetPlaybackStateForClient");
+    MR.getNowPlayingInfoForClient = dlsym(handle, "MRMediaRemoteGetNowPlayingInfoForClient");
+    MR.sendCommandToClient = dlsym(handle, "MRMediaRemoteSendCommandToClient");
     return MR.registerForNotifications && MR.getNowPlayingInfo && MR.getIsPlaying && MR.sendCommand;
 }
 
@@ -139,6 +176,52 @@ static void emitNowPlaying(NSDictionary *info, BOOL isPlaying, NSString *bundleI
     emit(message);
 }
 
+static BOOL canQueryClients(void) {
+    return MR.getNowPlayingClients && MR.clientProcessIdentifier && MR.getPlaybackStateForClient
+        && MR.getNowPlayingInfoForClient && MR.sendCommandToClient && MR.clientBundleIdentifier;
+}
+
+static int processIdentifier(id client) {
+    return client != nil ? MR.clientProcessIdentifier(client) : 0;
+}
+
+static void emitClient(NSDictionary *info, BOOL isPlaying, id client) {
+    NSString *bundleIdentifier = client && MR.clientBundleIdentifier ? MR.clientBundleIdentifier(client) : nil;
+    NSString *parentBundleIdentifier = client && MR.clientParentBundleIdentifier ? MR.clientParentBundleIdentifier(client) : nil;
+    emitNowPlaying(info, isPlaying, bundleIdentifier, parentBundleIdentifier);
+}
+
+/// Looks for a client other than `excluded` that is playing. Also reports whether the currently
+/// selected client still exists. Calls `completion` on the helper queue.
+static void findPlayingClient(id excluded, void (^completion)(id playingClient, id remainingSelectedClient)) {
+    MR.getNowPlayingClients(helperQueue, ^(NSArray *clients) {
+        dispatch_group_t group = dispatch_group_create();
+        __block id playingClient = nil;
+        __block id remainingSelectedClient = nil;
+        int excludedProcess = processIdentifier(excluded);
+        int selectedProcess = processIdentifier(selectedClient);
+        for (id client in clients) {
+            int process = processIdentifier(client);
+            if (process == excludedProcess) {
+                continue;
+            }
+            if (selectedClient != nil && process == selectedProcess) {
+                remainingSelectedClient = client;
+            }
+            dispatch_group_enter(group);
+            MR.getPlaybackStateForClient(client, nil, helperQueue, ^(unsigned int state) {
+                if (state == MRPlaybackStatePlaying && playingClient == nil) {
+                    playingClient = client;
+                }
+                dispatch_group_leave(group);
+            });
+        }
+        dispatch_group_notify(group, helperQueue, ^{
+            completion(playingClient, remainingSelectedClient);
+        });
+    });
+}
+
 static void fetchNowPlaying(void) {
     MR.getNowPlayingInfo(helperQueue, ^(NSDictionary *info) {
         MR.getIsPlaying(helperQueue, ^(BOOL isPlaying) {
@@ -147,9 +230,30 @@ static void fetchNowPlaying(void) {
                 return;
             }
             MR.getNowPlayingClient(helperQueue, ^(id client) {
-                NSString *bundleIdentifier = client && MR.clientBundleIdentifier ? MR.clientBundleIdentifier(client) : nil;
-                NSString *parentBundleIdentifier = client && MR.clientParentBundleIdentifier ? MR.clientParentBundleIdentifier(client) : nil;
-                emitNowPlaying(info, isPlaying, bundleIdentifier, parentBundleIdentifier);
+                if (isPlaying || !canQueryClients()) {
+                    selectedClient = nil;
+                    emitClient(info, isPlaying, client);
+                    return;
+                }
+                // The system's now playing app is paused (or gone): prefer an app that is playing,
+                // then the app shown before, which the user may just have paused from Halo.
+                findPlayingClient(client, ^(id playingClient, id remainingSelectedClient) {
+                    id other = playingClient ?: remainingSelectedClient;
+                    if (other == nil) {
+                        selectedClient = nil;
+                        emitClient(info, NO, client);
+                        return;
+                    }
+                    MR.getNowPlayingInfoForClient(other, nil, nil, helperQueue, ^(NSDictionary *otherInfo) {
+                        if (otherInfo.count == 0) {
+                            selectedClient = nil;
+                            emitClient(info, NO, client);
+                            return;
+                        }
+                        selectedClient = other;
+                        emitClient(otherInfo, other == playingClient, other);
+                    });
+                });
             });
         });
     });
@@ -165,21 +269,35 @@ static void scheduleFetch(void) {
     });
 }
 
+/// Sends a command to the selected client when there is one, else to the system's now playing app.
+static void sendCommand(int command, NSDictionary *options) {
+    if (selectedClient != nil && MR.sendCommandToClient != NULL) {
+        MR.sendCommandToClient(command, options, nil, selectedClient, 0, helperQueue, ^(id result) {});
+    } else {
+        MR.sendCommand(command, options);
+    }
+}
+
 static void handleCommand(NSString *line) {
     NSArray<NSString *> *parts = [line componentsSeparatedByString:@" "];
     NSString *command = parts.firstObject;
     if ([command isEqualToString:@"play"]) {
-        MR.sendCommand(MRCommandPlay, nil);
+        sendCommand(MRCommandPlay, nil);
     } else if ([command isEqualToString:@"pause"]) {
-        MR.sendCommand(MRCommandPause, nil);
+        sendCommand(MRCommandPause, nil);
     } else if ([command isEqualToString:@"toggle"]) {
-        MR.sendCommand(MRCommandTogglePlayPause, nil);
+        sendCommand(MRCommandTogglePlayPause, nil);
     } else if ([command isEqualToString:@"next"]) {
-        MR.sendCommand(MRCommandNextTrack, nil);
+        sendCommand(MRCommandNextTrack, nil);
     } else if ([command isEqualToString:@"previous"]) {
-        MR.sendCommand(MRCommandPreviousTrack, nil);
-    } else if ([command isEqualToString:@"seek"] && parts.count == 2 && MR.setElapsedTime != NULL) {
-        MR.setElapsedTime(parts[1].doubleValue);
+        sendCommand(MRCommandPreviousTrack, nil);
+    } else if ([command isEqualToString:@"seek"] && parts.count == 2) {
+        double position = parts[1].doubleValue;
+        if (selectedClient != nil) {
+            sendCommand(MRCommandSeekToPlaybackPosition, @{ @"kMRMediaRemoteOptionPlaybackPosition": @(position) });
+        } else if (MR.setElapsedTime != NULL) {
+            MR.setElapsedTime(position);
+        }
     } else if ([command isEqualToString:@"refresh"]) {
         fetchNowPlaying();
     }
@@ -227,11 +345,19 @@ bool HaloMediaRemoteStart(HaloMediaRemoteEmitFunction emitter, void *context) {
     if (!loadMediaRemote()) {
         return false;
     }
-    NSArray<NSString *> *notifications = @[
+    NSArray<NSString *> *notificationSymbols = @[
         @"kMRMediaRemoteNowPlayingInfoDidChangeNotification",
         @"kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification",
         @"kMRMediaRemoteNowPlayingApplicationDidChangeNotification",
+        // Per-player notifications also cover apps that are not the system's now playing app.
+        @"kMRMediaRemotePlayerIsPlayingDidChangeNotification",
+        @"kMRMediaRemotePlayerNowPlayingInfoDidChangeNotification",
+        @"kMRMediaRemotePlayerPlaybackStateDidChangeNotification",
     ];
+    NSMutableArray<NSString *> *notifications = [NSMutableArray array];
+    for (NSString *symbol in notificationSymbols) {
+        [notifications addObject:notificationName(symbol)];
+    }
     for (NSString *name in notifications) {
         [NSNotificationCenter.defaultCenter addObserverForName:name object:nil queue:nil usingBlock:^(NSNotification *note) {
             dispatch_async(helperQueue, ^{ scheduleFetch(); });
