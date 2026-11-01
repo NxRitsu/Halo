@@ -55,11 +55,14 @@ struct IslandMetrics: Equatable {
 
     private var expandedWidth: CGFloat { max(base.width + 220, 440) }
 
+    /// Height of the synced lyrics area in the expanded player, spacing included.
+    static let lyricsHeight: CGFloat = 86
+
     func layout(expanded: Bool, content: IslandContent) -> IslandLayout {
         if expanded {
             let contentHeight: CGFloat = switch content.expanded {
             case .idle: 96
-            case .nowPlaying: 150
+            case .nowPlaying: content.showsLyrics ? 150 + Self.lyricsHeight : 150
             }
             return IslandLayout(width: expandedWidth, height: base.height + contentHeight, earRadius: 14, bottomRadius: 32)
         }
@@ -78,8 +81,13 @@ struct IslandMetrics: Equatable {
     var largest: IslandLayout {
         let all = [false, true].flatMap { expanded in
             [IslandContent.Activity.idle, .nowPlaying].flatMap { activity in
-                [false, true].map { media in
-                    layout(expanded: expanded, content: IslandContent(expanded: activity, compactShowsMedia: media))
+                [false, true].flatMap { media in
+                    [false, true].map { lyrics in
+                        layout(
+                            expanded: expanded,
+                            content: IslandContent(expanded: activity, compactShowsMedia: media, showsLyrics: lyrics)
+                        )
+                    }
                 }
             }
         }

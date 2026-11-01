@@ -41,6 +41,36 @@
         }
       }
     },
+    "Clear" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer"
+          }
+        }
+      }
+    },
+    "Cleared" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacées"
+          }
+        }
+      }
+    },
+    "Current track" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morceau en cours"
+          }
+        }
+      }
+    },
     "Disabled" : {
       "localizations" : {
         "fr" : {
@@ -91,6 +121,16 @@
         }
       }
     },
+    "Instrumental" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instrumental"
+          }
+        }
+      }
+    },
     "Island" : {
       "localizations" : {
         "fr" : {
@@ -107,6 +147,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir à l’ouverture de session"
+          }
+        }
+      }
+    },
+    "LRCLIB is unavailable, next try at %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LRCLIB est indisponible, prochain essai à %@"
+          }
+        }
+      }
+    },
+    "Lyrics" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paroles"
+          }
+        }
+      }
+    },
+    "Lyrics come from LRCLIB, a free community database. Only the title, artist, album and duration of the track are sent. Results are kept on this Mac." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les paroles proviennent de LRCLIB, une base de données communautaire gratuite. Seuls le titre, l'artiste, l'album et la durée du morceau sont envoyés. Les résultats sont conservés sur ce Mac."
           }
         }
       }
@@ -171,6 +241,26 @@
         }
       }
     },
+    "No synced lyrics for this track" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de paroles synchronisées pour ce morceau"
+          }
+        }
+      }
+    },
+    "Nothing playing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune lecture en cours"
+          }
+        }
+      }
+    },
     "On displays without a notch, a virtual island is shown at the top of the screen." : {
       "localizations" : {
         "fr" : {
@@ -211,6 +301,26 @@
         }
       }
     },
+    "Saved lyrics" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paroles enregistrées"
+          }
+        }
+      }
+    },
+    "Searching…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche…"
+          }
+        }
+      }
+    },
     "Settings…" : {
       "localizations" : {
         "fr" : {
@@ -227,6 +337,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afficher l’icône dans la barre des menus"
+          }
+        }
+      }
+    },
+    "Show synced lyrics" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les paroles synchronisées"
           }
         }
       }
@@ -267,6 +387,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Démarrage…"
+          }
+        }
+      }
+    },
+    "Synced lyrics found" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paroles synchronisées trouvées"
           }
         }
       }

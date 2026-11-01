@@ -38,7 +38,12 @@ final class IslandWindowController {
         self.displayID = displayID
         activities = services.activities
         let metrics = IslandMetrics(screen: screen)
-        model = IslandModel(metrics: metrics, content: services.activities.content, nowPlaying: services.nowPlaying)
+        model = IslandModel(
+            metrics: metrics,
+            content: services.activities.content,
+            nowPlaying: services.nowPlaying,
+            lyrics: services.lyrics
+        )
         panel = IslandPanel(contentRect: metrics.windowFrame(for: model.layout))
 
         hostingView = IslandHostingView(rootView: IslandView(model: model))

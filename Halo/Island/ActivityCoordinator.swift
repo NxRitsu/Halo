@@ -11,6 +11,8 @@ struct IslandContent: Equatable {
     var expanded = Activity.idle
     /// Whether the compact island shows the now playing "wings" around the notch.
     var compactShowsMedia = false
+    /// Whether the expanded player has room for synced lyrics.
+    var showsLyrics = false
 }
 
 /// Decides what the islands display, by priority:
@@ -21,10 +23,12 @@ final class ActivityCoordinator {
     private(set) var content = IslandContent()
 
     @ObservationIgnored private let nowPlaying: NowPlayingService
+    @ObservationIgnored private let lyrics: LyricsService
     @ObservationIgnored private var pendingMediaHide: Task<Void, Never>?
 
-    init(nowPlaying: NowPlayingService) {
+    init(nowPlaying: NowPlayingService, lyrics: LyricsService) {
         self.nowPlaying = nowPlaying
+        self.lyrics = lyrics
         observe()
     }
 
@@ -45,6 +49,11 @@ final class ActivityCoordinator {
         let expanded: IslandContent.Activity = hasTrack ? .nowPlaying : .idle
         if content.expanded != expanded {
             content.expanded = expanded
+        }
+
+        let showsLyrics = hasTrack && lyrics.lyrics != nil
+        if content.showsLyrics != showsLyrics {
+            content.showsLyrics = showsLyrics
         }
 
         if isPlaying {

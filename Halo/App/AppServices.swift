@@ -6,13 +6,16 @@ final class AppServices {
     static let shared = AppServices()
 
     let nowPlaying = NowPlayingService()
+    let lyrics: LyricsService
     let activities: ActivityCoordinator
 
     private init() {
-        activities = ActivityCoordinator(nowPlaying: nowPlaying)
+        lyrics = LyricsService(nowPlaying: nowPlaying)
+        activities = ActivityCoordinator(nowPlaying: nowPlaying, lyrics: lyrics)
     }
 
     func start() {
         nowPlaying.setEnabled(Preferences.nowPlayingEnabled)
+        lyrics.setEnabled(Preferences.lyricsEnabled)
     }
 }

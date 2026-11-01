@@ -20,7 +20,7 @@ _Screenshots coming soon._
 | --- | --- |
 | ✅ | Island aligned with the notch, expands on hover or click, virtual island on other displays |
 | ✅ | Now Playing (Apple Music, Spotify, Deezer, browsers…) with playback controls |
-| 🚧 | Synced lyrics |
+| ✅ | Synced lyrics, cached on your Mac |
 | 🚧 | Battery and charging alerts |
 | 🚧 | AirPods and Bluetooth audio alerts with battery levels |
 | 🚧 | Weather |

@@ -12,6 +12,9 @@ struct SettingsView: View {
             Tab("Media", systemImage: "music.note") {
                 MediaSettingsView()
             }
+            Tab("Lyrics", systemImage: "quote.bubble") {
+                LyricsSettingsView()
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .frame(width: 520, height: 360)
@@ -143,6 +146,62 @@ private struct MediaSettingsView: View {
         case .unavailable(let reason):
             Label("Unavailable: \(reason)", systemImage: "xmark.octagon.fill")
                 .foregroundStyle(.red)
+        }
+    }
+}
+
+private struct LyricsSettingsView: View {
+    @AppStorage(PreferenceKey.lyricsEnabled) private var lyricsEnabled = true
+    @State private var cacheCleared = false
+    private let lyrics = AppServices.shared.lyrics
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Show synced lyrics", isOn: $lyricsEnabled)
+                LabeledContent("Current track") {
+                    statusText
+                }
+            } footer: {
+                Text("Lyrics come from LRCLIB, a free community database. Only the title, artist, album and duration of the track are sent. Results are kept on this Mac.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section {
+                LabeledContent("Saved lyrics") {
+                    Button(cacheCleared ? "Cleared" : "Clear") {
+                        lyrics.clearCache()
+                        cacheCleared = true
+                    }
+                    .disabled(cacheCleared)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .onChange(of: lyricsEnabled) { _, enabled in
+            lyrics.setEnabled(enabled)
+        }
+    }
+
+    @ViewBuilder
+    private var statusText: some View {
+        switch lyrics.status {
+        case .disabled:
+            Text("Disabled")
+        case .idle:
+            Text("Nothing playing")
+        case .searching:
+            Text("Searching…")
+        case .found:
+            Label("Synced lyrics found", systemImage: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+        case .instrumental:
+            Text("Instrumental")
+        case .notFound:
+            Text("No synced lyrics for this track")
+        case .unavailable(let retryAt):
+            Label("LRCLIB is unavailable, next try at \(retryAt.formatted(date: .omitted, time: .shortened))", systemImage: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
         }
     }
 }

@@ -11,7 +11,7 @@ None yet.
 
 | Service | Used for | Terms |
 | --- | --- | --- |
-| _none yet_ | | |
+| [LRCLIB](https://lrclib.net) | Synced lyrics. Only the track title, artist, album and duration are sent; results are cached on disk and requests back off when the service is unavailable. | Free API for non-commercial use, see [lrclib.net](https://lrclib.net). |
 
 ## Inspiration
 

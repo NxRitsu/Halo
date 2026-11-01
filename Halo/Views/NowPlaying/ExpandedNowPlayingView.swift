@@ -4,6 +4,8 @@ import SwiftUI
 /// Expanded island while a track is loaded: artwork, title, progress and playback controls.
 struct ExpandedNowPlayingView: View {
     let nowPlaying: NowPlayingService
+    /// Synced lyrics of the track, when the island has room for them.
+    let lyrics: SyncedLyrics?
 
     var body: some View {
         VStack(spacing: 12) {
@@ -21,6 +23,13 @@ struct ExpandedNowPlayingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 EqualizerView(isAnimating: nowPlaying.isPlaying, color: nowPlaying.artworkTint ?? .white)
                     .frame(width: 18, height: 16)
+            }
+
+            if let lyrics {
+                LyricsView(lyrics: lyrics, nowPlaying: nowPlaying)
+                    .id(lyrics)
+                    .frame(height: IslandMetrics.lyricsHeight - 12)
+                    .transition(.opacity)
             }
 
             if nowPlaying.track?.duration != nil {

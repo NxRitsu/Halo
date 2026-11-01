@@ -34,7 +34,10 @@ struct IslandView: View {
             Group {
                 switch model.content.expanded {
                 case .nowPlaying:
-                    ExpandedNowPlayingView(nowPlaying: model.nowPlaying)
+                    ExpandedNowPlayingView(
+                        nowPlaying: model.nowPlaying,
+                        lyrics: model.content.showsLyrics ? model.lyrics.lyrics : nil
+                    )
                 case .idle:
                     ClockView()
                 }

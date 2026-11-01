@@ -18,3 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - English and French localization.
 - Now Playing: artwork and equalizer around the notch, expanded player with seekable progress
   bar and playback controls. Works with any app reporting to the system (Music, Spotify, browsers…).
+- Synced lyrics from LRCLIB in the expanded player, cached on disk, with a Lyrics settings tab.
