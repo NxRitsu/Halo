@@ -5,6 +5,10 @@ import OSLog
 ///
 /// One lookup per track at most: results (including "no lyrics") are cached on disk. When LRCLIB
 /// is unreachable or overloaded, requests stop for an exponentially growing delay (30 s up to 1 h).
+///
+/// LRCLIB answers "503 ServerOverloaded" when a lookup finds nothing, so a single 503 is taken
+/// as "no lyrics" (cached for a day only). Several in a row, for different tracks, are taken as
+/// a real overload.
 @MainActor
 @Observable
 final class LyricsService {
@@ -27,6 +31,8 @@ final class LyricsService {
     private static let requestDelay: Duration = .milliseconds(600)
     private static let initialRetryDelay: TimeInterval = 30
     private static let maximumRetryDelay: TimeInterval = 3600
+    private static let busyLifetime: TimeInterval = 24 * 3600
+    private static let busyResponsesBeforeBackoff = 3
 
     @ObservationIgnored private let nowPlaying: NowPlayingService
     @ObservationIgnored private let client = LRCLIBClient()
@@ -36,6 +42,7 @@ final class LyricsService {
     @ObservationIgnored private var currentQuery: LRCLIBClient.Query?
     @ObservationIgnored private var loadTask: Task<Void, Never>?
     @ObservationIgnored private var failureCount = 0
+    @ObservationIgnored private var consecutiveBusyResponses = 0
     @ObservationIgnored private var retryDate: Date?
 
     init(nowPlaying: NowPlayingService) {
@@ -127,10 +134,22 @@ final class LyricsService {
                 let result = try await client.lookUp(query)
                 guard let self else { return }
                 self.failureCount = 0
+                self.consecutiveBusyResponses = 0
                 self.retryDate = nil
                 self.cache.store(result, for: query)
                 if self.currentQuery == query {
                     self.apply(result)
+                }
+            } catch LRCLIBClient.ServiceError.busy {
+                guard let self, !Task.isCancelled else { return }
+                self.consecutiveBusyResponses += 1
+                if self.consecutiveBusyResponses < Self.busyResponsesBeforeBackoff {
+                    self.cache.store(.notFound, for: query, lifetime: Self.busyLifetime)
+                    if self.currentQuery == query {
+                        self.apply(.notFound)
+                    }
+                } else if self.currentQuery == query {
+                    self.requestFailed(query, error: LRCLIBClient.ServiceError.busy)
                 }
             } catch {
                 guard let self, !Task.isCancelled, self.currentQuery == query else { return }

@@ -10,9 +10,11 @@ struct LyricsCache: Sendable {
         var syncedLyrics: String?
         var instrumental: Bool
         var date: Date
+        /// How long a "no lyrics" result stays valid. Missing in entries written by older versions.
+        var lifetime: TimeInterval?
     }
 
-    private static let notFoundLifetime: TimeInterval = 7 * 24 * 3600
+    static let notFoundLifetime: TimeInterval = 7 * 24 * 3600
 
     let directory: URL = URL.applicationSupportDirectory
         .appending(path: AppInfo.name, directoryHint: .isDirectory)
@@ -24,11 +26,12 @@ struct LyricsCache: Sendable {
         else { return nil }
         if let lyrics = entry.syncedLyrics { return .synced(lyrics) }
         if entry.instrumental { return .instrumental }
-        return Date.now.timeIntervalSince(entry.date) < Self.notFoundLifetime ? .notFound : nil
+        let lifetime = entry.lifetime ?? Self.notFoundLifetime
+        return Date.now.timeIntervalSince(entry.date) < lifetime ? .notFound : nil
     }
 
-    func store(_ result: LyricsLookupResult, for query: LRCLIBClient.Query) {
-        var entry = Entry(syncedLyrics: nil, instrumental: false, date: .now)
+    func store(_ result: LyricsLookupResult, for query: LRCLIBClient.Query, lifetime: TimeInterval = notFoundLifetime) {
+        var entry = Entry(syncedLyrics: nil, instrumental: false, date: .now, lifetime: lifetime)
         switch result {
         case .synced(let lyrics): entry.syncedLyrics = lyrics
         case .instrumental: entry.instrumental = true

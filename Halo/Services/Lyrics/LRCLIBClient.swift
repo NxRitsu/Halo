@@ -12,8 +12,12 @@ enum LyricsLookupResult: Equatable, Sendable {
 /// Only the track title, artist, album and duration are sent. Requests identify Halo with a
 /// User-Agent that links to the repository, as LRCLIB asks.
 struct LRCLIBClient: Sendable {
-    struct ServiceError: Error {
-        let description: String
+    enum ServiceError: Error {
+        /// Network error, rate limit or server error.
+        case unavailable(String)
+        /// HTTP 503 "ServerOverloaded". LRCLIB also answers this, immediately, when a lookup
+        /// finds nothing, so on its own it usually means "no lyrics" rather than an outage.
+        case busy
     }
 
     struct Query: Equatable, Sendable {
@@ -48,9 +52,13 @@ struct LRCLIBClient: Sendable {
     /// Looks up the exact track first, then falls back to a search.
     /// Throws `ServiceError` when the service is unreachable or overloaded.
     func lookUp(_ query: Query) async throws -> LyricsLookupResult {
-        if let record: Record = try await request("get", query: query, includeAlbumAndDuration: true) {
-            if record.instrumental == true { return .instrumental }
-            if let lyrics = record.syncedLyrics, !lyrics.isEmpty { return .synced(lyrics) }
+        do {
+            if let record: Record = try await request("get", query: query, includeAlbumAndDuration: true) {
+                if record.instrumental == true { return .instrumental }
+                if let lyrics = record.syncedLyrics, !lyrics.isEmpty { return .synced(lyrics) }
+            }
+        } catch ServiceError.busy {
+            // Usually means the exact lookup found nothing: the search may still find the track.
         }
 
         let records: [Record] = try await request("search", query: query, includeAlbumAndDuration: false) ?? []
@@ -88,7 +96,7 @@ struct LRCLIBClient: Sendable {
         do {
             (data, response) = try await session.data(from: components.url!)
         } catch {
-            throw ServiceError(description: error.localizedDescription)
+            throw ServiceError.unavailable(error.localizedDescription)
         }
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         switch status {
@@ -96,10 +104,12 @@ struct LRCLIBClient: Sendable {
             do {
                 return try JSONDecoder().decode(Response.self, from: data)
             } catch {
-                throw ServiceError(description: "Unexpected response")
+                throw ServiceError.unavailable("Unexpected response")
             }
+        case 503:
+            throw ServiceError.busy
         case 429, 500...:
-            throw ServiceError(description: "HTTP \(status)")
+            throw ServiceError.unavailable("HTTP \(status)")
         default:
             // 404 (no match) or 400 (query rejected): nothing to retry.
             return nil
