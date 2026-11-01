@@ -19,7 +19,7 @@ _Screenshots coming soon._
 | Status | Feature |
 | --- | --- |
 | ✅ | Island aligned with the notch, expands on hover or click, virtual island on other displays |
-| 🚧 | Now Playing (Apple Music, Spotify, browsers…) with playback controls |
+| ✅ | Now Playing (Apple Music, Spotify, Deezer, browsers…) with playback controls |
 | 🚧 | Synced lyrics |
 | 🚧 | Battery and charging alerts |
 | 🚧 | AirPods and Bluetooth audio alerts with battery levels |
