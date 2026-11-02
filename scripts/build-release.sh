@@ -5,7 +5,10 @@
 #
 # Needs xcodegen and create-dmg (brew install xcodegen create-dmg).
 # Signed ad hoc by default. Optional environment variables:
+#   SELF_SIGNED_IDENTITY Hash of a self-signed code signing certificate in the keychain. macOS
+#                        then recognizes each update as the same app, so permissions survive it.
 #   SIGN_IDENTITY        Name of a "Developer ID Application" certificate in the keychain.
+#                        Takes precedence over SELF_SIGNED_IDENTITY.
 #   NOTARY_APPLE_ID, NOTARY_TEAM_ID, NOTARY_PASSWORD
 #                        Also notarize with Apple. Needs SIGN_IDENTITY.
 set -euo pipefail
@@ -14,7 +17,8 @@ cd "$(dirname "$0")/.."
 VERSION=${1:?Usage: build-release.sh <version> [build number]}
 # Sparkle compares build numbers, so they must always grow: the commit count does.
 BUILD=${2:-$(git rev-list --count HEAD)}
-SIGN_IDENTITY=${SIGN_IDENTITY:--}
+SIGN_IDENTITY=${SIGN_IDENTITY:-}
+SELF_SIGNED_IDENTITY=${SELF_SIGNED_IDENTITY:--}
 ARTIFACTS=build/artifacts
 # Spotlight skips folders ending in .noindex, so build products don't show up as installed apps.
 DERIVED=build/release.noindex
@@ -27,9 +31,9 @@ notarize() {
 }
 
 sign() {
-    if [ "$SIGN_IDENTITY" = "-" ]; then
+    if [ -z "$SIGN_IDENTITY" ]; then
         # No hardened runtime: its library validation rejects embedded frameworks without a team ID.
-        codesign --force --timestamp=none --sign - "$@"
+        codesign --force --timestamp=none --sign "$SELF_SIGNED_IDENTITY" "$@"
     else
         codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$@"
     fi
@@ -90,7 +94,7 @@ create-dmg \
     "$DMG" "$STAGING"
 rm -rf "$STAGING"
 
-if [ "$SIGN_IDENTITY" != "-" ]; then
+if [ -n "$SIGN_IDENTITY" ]; then
     codesign --force --timestamp --sign "$SIGN_IDENTITY" "$DMG"
     if [ -n "${NOTARY_APPLE_ID:-}" ]; then
         notarize "$DMG"

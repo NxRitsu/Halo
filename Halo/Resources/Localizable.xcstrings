@@ -81,16 +81,6 @@
         }
       }
     },
-    "Allow %@ under Privacy & Security to measure the menu bar. If it's already in the list, remove it and add it back: updates can make macOS forget it. Until then, playback is always shown." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autorisez %@ dans Confidentialité et sécurité pour mesurer la barre des menus. S’il figure déjà dans la liste, retirez-le puis ajoutez-le à nouveau : les mises à jour peuvent le faire oublier à macOS. En attendant, la lecture reste toujours affichée."
-          }
-        }
-      }
-    },
     "Allow %@ under Privacy & Security → Bluetooth to detect your audio devices." : {
       "localizations" : {
         "fr" : {
@@ -891,6 +881,16 @@
         }
       }
     },
+    "Reopen %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rouvrir %@"
+          }
+        }
+      }
+    },
     "Report" : {
       "localizations" : {
         "fr" : {
@@ -1077,6 +1077,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Transparence"
+          }
+        }
+      }
+    },
+    "Turn on %@ in System Settings to measure the menu bar, then reopen it. If it's already on, remove it from the list and add it back. Until then, playback is always shown." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez %@ dans Réglages Système pour mesurer la barre des menus, puis rouvrez-le. S’il est déjà activé, retirez-le de la liste et ajoutez-le à nouveau. En attendant, la lecture reste toujours affichée."
           }
         }
       }

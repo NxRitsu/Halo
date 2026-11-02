@@ -153,13 +153,18 @@ private struct IslandSettingsView: View {
                 }
                 if mediaWingsMode == .automatic, !menuBar.isTrusted {
                     LabeledContent {
-                        Button("Open System Settings") {
-                            menuBar.openAccessSettings()
+                        HStack {
+                            Button("Open System Settings") {
+                                menuBar.openAccessSettings()
+                            }
+                            Button("Reopen \(AppInfo.name)") {
+                                AppInfo.relaunch()
+                            }
                         }
                     } label: {
                         Label("Permission required", systemImage: "exclamationmark.triangle.fill")
                             .foregroundStyle(.orange)
-                        Text("Allow \(AppInfo.name) under Privacy & Security to measure the menu bar. If it's already in the list, remove it and add it back: updates can make macOS forget it. Until then, playback is always shown.")
+                        Text("Turn on \(AppInfo.name) in System Settings to measure the menu bar, then reopen it. If it's already on, remove it from the list and add it back. Until then, playback is always shown.")
                     }
                 }
             } footer: {

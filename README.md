@@ -58,10 +58,11 @@ Halo can update itself: on the second launch it asks whether to check for update
 and you can change this or check by hand in **Settings → General**. Updates are verified with a
 signature before they are installed.
 
-Without notarization, macOS sees each update as a new app, so permissions such as Accessibility may
-have to be granted again afterwards. Halo asks again once per version. If the option still doesn't
-work, remove Halo from the list in
-**System Settings → Privacy & Security → Accessibility** and add it back.
+Permissions such as Accessibility carry over to updates. If you installed a version older than
+0.2.0, macOS will ask for them once more after updating to it: turn Halo on in the system list, then
+use **Reopen Halo** in **Settings → Island**. If the option still doesn't work, remove Halo from the list in
+**System Settings → Privacy & Security → Accessibility** and add it back. macOS 27 renamed this
+section: the **Open System Settings** button in **Settings → Island** goes straight to it.
 
 ## Privacy
 
