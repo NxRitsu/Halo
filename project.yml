@@ -65,6 +65,7 @@ targets:
         LSUIElement: true
         NSHumanReadableCopyright: "MIT License"
         NSAppleEventsUsageDescription: "Halo controls playback in Music and Spotify when the system's now playing information is unavailable."
+        NSAccessibilityUsageDescription: "Halo reads the position of menu bar items to avoid covering them. This is only used if you choose to show playback when there's room."
 
   MediaRemoteHelper:
     type: framework

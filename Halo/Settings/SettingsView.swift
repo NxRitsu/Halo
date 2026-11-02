@@ -74,8 +74,9 @@ private struct IslandSettingsView: View {
     @AppStorage(PreferenceKey.expandOnHover) private var expandOnHover = true
     @AppStorage(PreferenceKey.hoverDelay) private var hoverDelay = 0.15
     @AppStorage(PreferenceKey.hideInFullScreen) private var hideInFullScreen = true
-    @AppStorage(PreferenceKey.mediaWingsEnabled) private var mediaWingsEnabled = true
+    @AppStorage(PreferenceKey.mediaWingsMode) private var mediaWingsMode = MediaWingsMode.always
     private let activities = AppServices.shared.activities
+    private let menuBar = AppServices.shared.menuBar
 
     var body: some View {
         Form {
@@ -105,16 +106,35 @@ private struct IslandSettingsView: View {
                 .disabled(!expandOnHover)
             }
             Section {
-                Toggle("Show playback around the notch", isOn: $mediaWingsEnabled)
+                Picker("Show playback around the notch", selection: $mediaWingsMode) {
+                    Text("Always").tag(MediaWingsMode.always)
+                    Text("When there's room").tag(MediaWingsMode.automatic)
+                    Text("Never").tag(MediaWingsMode.never)
+                }
+                if mediaWingsMode == .automatic, !menuBar.isTrusted {
+                    LabeledContent {
+                        Button("Open System Settings") {
+                            menuBar.openAccessSettings()
+                        }
+                    } label: {
+                        Label("Permission required", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Allow \(AppInfo.name) under Privacy & Security to measure the menu bar. Until then, playback is always shown.")
+                    }
+                }
             } footer: {
-                Text("Turn this off if the island hides menus in the menu bar. The player stays available by expanding the island.")
+                Text("“When there's room” keeps the island at the size of the notch, low battery indicator included, whenever it would cover menu bar items. It uses the Accessibility permission to read the position of these items, nothing else. The player stays available by expanding the island.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
-        .onChange(of: mediaWingsEnabled) { _, shows in
-            activities.showsMediaWings = shows
+        .onAppear { menuBar.refreshAccess() }
+        .onChange(of: mediaWingsMode) { _, mode in
+            activities.mediaWingsMode = mode
+            if mode == .automatic {
+                menuBar.requestAccess()
+            }
         }
     }
 }

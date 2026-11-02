@@ -54,6 +54,14 @@ struct IslandMetrics: Equatable {
     /// Kept as narrow as its content allows, because the wings cover the menu bar.
     var wingWidth: CGFloat { base.height }
 
+    /// Horizontal parts of the menu bar covered by the compact wings, in global screen coordinates.
+    var wingRanges: [Range<CGFloat>] {
+        let overflow = (wingsLayout.totalWidth - base.width) / 2
+        let notchMinX = centerX - base.width / 2
+        let notchMaxX = centerX + base.width / 2
+        return [notchMinX - overflow ..< notchMinX, notchMaxX ..< notchMaxX + overflow]
+    }
+
     private var expandedWidth: CGFloat { max(base.width + 220, 440) }
 
     /// Height of the synced lyrics area in the expanded player, spacing included.

@@ -58,6 +58,10 @@ leave your Mac, and both can be disabled:
 
 Everything else (media info, battery, Bluetooth, files) stays on your Mac.
 
+Halo only asks for the Accessibility permission if you choose to show playback around the notch
+"when there's room". It then reads the position of menu bar items, not their titles or anything
+else, so the island doesn't cover them.
+
 ## Building from source
 
 ```sh

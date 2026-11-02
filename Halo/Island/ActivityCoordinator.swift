@@ -39,21 +39,25 @@ final class ActivityCoordinator {
     private(set) var content = IslandContent()
     /// Whether the compact island shows the charge when the battery is low.
     var showsLowBatteryIndicator = true
-    /// Whether the compact island shows the artwork and equalizer around the notch while media
-    /// plays. When off, the media stays reachable by expanding the island.
-    var showsMediaWings = true
+    /// When the compact island shows the artwork and equalizer around the notch while media
+    /// plays. Otherwise, the media stays reachable by expanding the island.
+    var mediaWingsMode = MediaWingsMode.always {
+        didSet { menuBar.setEnabled(mediaWingsMode == .automatic) }
+    }
 
     @ObservationIgnored private let nowPlaying: NowPlayingService
     @ObservationIgnored private let lyrics: LyricsService
     @ObservationIgnored private let battery: BatteryService
+    @ObservationIgnored private let menuBar: MenuBarSpaceMonitor
     @ObservationIgnored private var pendingMediaHide: Task<Void, Never>?
     @ObservationIgnored private var alertTask: Task<Void, Never>?
     @ObservationIgnored private var alertCount = 0
 
-    init(nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService) {
+    init(nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService, menuBar: MenuBarSpaceMonitor) {
         self.nowPlaying = nowPlaying
         self.lyrics = lyrics
         self.battery = battery
+        self.menuBar = menuBar
         battery.onEvent = { [weak self] event in
             self?.batteryEvent(event)
         }
@@ -84,12 +88,15 @@ final class ActivityCoordinator {
             content.showsLyrics = showsLyrics
         }
 
-        let showsBattery = showsLowBatteryIndicator && battery.isLow
+        // The automatic mode keeps the menu bar clear, whatever the wings would show.
+        let wingsCoverMenus = mediaWingsMode == .automatic && menuBar.wingsCoverMenus
+
+        let showsBattery = showsLowBatteryIndicator && battery.isLow && !wingsCoverMenus
         if content.compactShowsBattery != showsBattery {
             content.compactShowsBattery = showsBattery
         }
 
-        if !showsMediaWings {
+        if mediaWingsMode == .never || wingsCoverMenus {
             pendingMediaHide?.cancel()
             pendingMediaHide = nil
             if content.compactShowsMedia {

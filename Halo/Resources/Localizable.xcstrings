@@ -61,6 +61,26 @@
         }
       }
     },
+    "Allow %@ under Privacy & Security to measure the menu bar. Until then, playback is always shown." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez %@ dans Confidentialité et sécurité pour mesurer la barre des menus. En attendant, la lecture reste toujours affichée."
+          }
+        }
+      }
+    },
+    "Always" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toujours"
+          }
+        }
+      }
+    },
     "Battery" : {
       "localizations" : {
         "fr" : {
@@ -371,6 +391,16 @@
         }
       }
     },
+    "Never" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jamais"
+          }
+        }
+      }
+    },
     "No synced lyrics for this track" : {
       "localizations" : {
         "fr" : {
@@ -417,6 +447,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir l’app"
+          }
+        }
+      }
+    },
+    "Open System Settings" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les Réglages Système"
+          }
+        }
+      }
+    },
+    "Permission required" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisation requise"
           }
         }
       }
@@ -591,16 +641,6 @@
         }
       }
     },
-    "Turn this off if the island hides menus in the menu bar. The player stays available by expanding the island." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivez cette option si l’île cache des menus dans la barre des menus. Le lecteur reste accessible en agrandissant l’île."
-          }
-        }
-      }
-    },
     "Unavailable: %@" : {
       "localizations" : {
         "fr" : {
@@ -631,12 +671,32 @@
         }
       }
     },
+    "When there's room" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand il y a la place"
+          }
+        }
+      }
+    },
     "You can always right-click the island to open the settings." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Un clic droit sur l’île permet toujours d’ouvrir les réglages."
+          }
+        }
+      }
+    },
+    "“When there's room” keeps the island at the size of the notch, low battery indicator included, whenever it would cover menu bar items. It uses the Accessibility permission to read the position of these items, nothing else. The player stays available by expanding the island." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Quand il y a la place » garde l’île à la taille de l’encoche, indicateur de batterie faible compris, dès qu’elle couvrirait des éléments de la barre des menus. Ce mode utilise l’autorisation d’accessibilité uniquement pour lire la position de ces éléments. Le lecteur reste accessible en agrandissant l’île."
           }
         }
       }
