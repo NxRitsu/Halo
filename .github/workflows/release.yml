@@ -102,7 +102,7 @@ jobs:
             echo "No SPARKLE_PRIVATE_KEY: skipping the appcast of this dry run."
             exit 0
           fi
-          INFO=build/release/Build/Products/Release/Halo.app/Contents/Info.plist
+          INFO=build/release.noindex/Build/Products/Release/Halo.app/Contents/Info.plist
           scripts/make-appcast.py "$VERSION" \
             "$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$INFO")" \
             "$(/usr/libexec/PlistBuddy -c 'Print LSMinimumSystemVersion' "$INFO")" \

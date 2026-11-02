@@ -20,7 +20,7 @@ REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "NxRitsu/Halo")
 
 
 def signature_attributes(archive):
-    tools = glob.glob("build/release/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update")
+    tools = glob.glob("build/release.noindex/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update")
     if not tools:
         sys.exit("sign_update not found: run scripts/build-release.sh first")
     key = os.environ.get("SPARKLE_PRIVATE_KEY")

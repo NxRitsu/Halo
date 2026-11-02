@@ -16,7 +16,8 @@ VERSION=${1:?Usage: build-release.sh <version> [build number]}
 BUILD=${2:-$(git rev-list --count HEAD)}
 SIGN_IDENTITY=${SIGN_IDENTITY:--}
 ARTIFACTS=build/artifacts
-DERIVED=build/release
+# Spotlight skips folders ending in .noindex, so build products don't show up as installed apps.
+DERIVED=build/release.noindex
 APP=$DERIVED/Build/Products/Release/Halo.app
 
 notarize() {
