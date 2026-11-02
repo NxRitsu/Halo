@@ -70,6 +70,11 @@ final class BatteryService {
     }
 
     #if DEBUG
+    /// Shows a made-up charge, for the images of the README.
+    func showSample(_ state: BatteryState) {
+        self.state = state
+    }
+
     /// Drains a fake battery from 23 % to 5 %, one percent per second, then plugs it in,
     /// to test the low battery alerts and indicator without waiting for the real battery.
     private func simulateDrain() {

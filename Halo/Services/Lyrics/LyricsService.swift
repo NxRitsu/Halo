@@ -50,6 +50,13 @@ final class LyricsService {
         observeTrack()
     }
 
+    #if DEBUG
+    /// Shows made-up lyrics, for the images of the README.
+    func showSample(_ lyrics: SyncedLyrics?) {
+        self.lyrics = lyrics
+    }
+    #endif
+
     func setEnabled(_ enabled: Bool) {
         isEnabled = enabled
         reset()

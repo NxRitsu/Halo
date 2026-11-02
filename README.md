@@ -12,7 +12,13 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 > Sur les Mac sans encoche et les écrans externes, une île virtuelle s'affiche en haut de l'écran.
 > Gratuit, open source, natif et léger. Interface en anglais et en français.
 
-_Screenshots coming soon._
+![The expanded island with the player and synced lyrics](docs/images/player.png)
+
+![Artwork and equalizer around the notch](docs/images/compact.png)
+
+![A charging alert below the notch](docs/images/battery.png)
+
+<sub>Rendered from Halo's real views, with a made-up track and a sample menu bar.</sub>
 
 ## Features
 

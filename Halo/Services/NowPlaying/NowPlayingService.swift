@@ -74,6 +74,17 @@ final class NowPlayingService {
         (source as? HelperProcessMediaRemoteSource)?.processIdentifier
     }
 
+    #if DEBUG
+    /// Shows a made-up track, for the images of the README.
+    func showSample(track: NowPlayingTrack, artwork: NSImage?, tint: NSColor, elapsed: TimeInterval) {
+        self.track = track
+        self.artwork = artwork
+        artworkTint = tint
+        isPlaying = true
+        position = PlaybackPosition(elapsed: elapsed, date: .now, isAdvancing: true)
+    }
+    #endif
+
     // MARK: - Lifecycle
 
     func setEnabled(_ enabled: Bool) {

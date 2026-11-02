@@ -6,6 +6,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Preferences.register()
+        #if DEBUG
+        if let scene = ProcessInfo.processInfo.environment["HALO_VISUAL_SCENE"] {
+            VisualScenes.show(scene)
+            return
+        }
+        #endif
         AppServices.shared.start()
         islandManager.start()
     }
