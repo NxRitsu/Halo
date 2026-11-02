@@ -10,7 +10,18 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest supported macOS and its SDK.
+          - runner: macos-26
+            preview: false
+          # macOS 27 SDK. GitHub still labels this image as a preview, so it doesn't fail the run.
+          - runner: xcode-27
+            preview: true
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.preview }}
     steps:
       - uses: actions/checkout@v5
 

@@ -19,3 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Now Playing: artwork and equalizer around the notch, expanded player with seekable progress
   bar and playback controls. Works with any app reporting to the system (Music, Spotify, browsers…).
 - Synced lyrics from LRCLIB in the expanded player, cached on disk, with a Lyrics settings tab.
+- macOS 27 (Golden Gate) support, with a CI build against the macOS 27 SDK.
+- On macOS 27, Halo's controls are disabled when macOS would send them to another app than the
+  one on screen, such as a paused video. They come back when that app closes or when playback is
+  resumed in the app on screen. Music and Spotify keep working through AppleScript.

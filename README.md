@@ -29,7 +29,7 @@ _Screenshots coming soon._
 
 ## Requirements
 
-- macOS 26 (Tahoe) or later
+- macOS 26 (Tahoe) or later, including macOS 27 (Golden Gate)
 - Apple Silicon Mac (a notch is optional)
 
 ## Installation
