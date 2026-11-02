@@ -1,0 +1,129 @@
+name: Release
+
+# A vX.Y.Z tag publishes a GitHub release. Running the workflow by hand is a dry run: it builds
+# everything from the Unreleased notes and only keeps the files as workflow artifacts.
+#
+# Secrets, stored in GitHub only:
+#   SPARKLE_PRIVATE_KEY          Signs updates. Required to publish a release.
+# Optional, for Developer ID signing and notarization. Without DEVELOPER_ID_P12, Halo is signed ad hoc:
+#   DEVELOPER_ID_P12             Base64 of the exported "Developer ID Application" certificate.
+#   DEVELOPER_ID_P12_PASSWORD    Password of that export.
+#   APPLE_ID, APPLE_TEAM_ID      Apple account used by notarytool.
+#   APPLE_APP_PASSWORD           App-specific password of that account.
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version number of the dry run
+        required: true
+        default: 0.0.0
+
+jobs:
+  release:
+    runs-on: macos-26
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The build number is the commit count.
+          fetch-depth: 0
+
+      - name: Resolve the version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            VERSION=${GITHUB_REF_NAME#v}
+            SECTION=$VERSION
+          else
+            VERSION=$INPUT_VERSION
+            SECTION=Unreleased
+          fi
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $VERSION"; exit 1; }
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          scripts/changelog-section.sh "$SECTION" > "$RUNNER_TEMP/notes.md"
+
+      - name: Install tools
+        run: brew install xcodegen create-dmg
+
+      - name: Detect Developer ID
+        id: developer-id
+        env:
+          DEVELOPER_ID_P12: ${{ secrets.DEVELOPER_ID_P12 }}
+        run: |
+          if [ -n "$DEVELOPER_ID_P12" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "No Developer ID certificate: signing ad hoc."
+          fi
+
+      - name: Import the Developer ID certificate
+        if: steps.developer-id.outputs.enabled == 'true'
+        env:
+          DEVELOPER_ID_P12: ${{ secrets.DEVELOPER_ID_P12 }}
+          DEVELOPER_ID_P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+        run: |
+          KEYCHAIN=$RUNNER_TEMP/signing.keychain-db
+          KEYCHAIN_PASSWORD=$(uuidgen)
+          echo "$DEVELOPER_ID_P12" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/certificate.p12" -k "$KEYCHAIN" -P "$DEVELOPER_ID_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          rm "$RUNNER_TEMP/certificate.p12"
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN" | sed -n 's/.*"\(Developer ID Application[^"]*\)".*/\1/p' | head -n 1)
+          [ -n "$IDENTITY" ] || { echo "No Developer ID Application certificate found"; exit 1; }
+          echo "SIGN_IDENTITY=$IDENTITY" >> "$GITHUB_ENV"
+
+      - name: Build
+        env:
+          NOTARY_APPLE_ID: ${{ steps.developer-id.outputs.enabled == 'true' && secrets.APPLE_ID || '' }}
+          NOTARY_TEAM_ID: ${{ steps.developer-id.outputs.enabled == 'true' && secrets.APPLE_TEAM_ID || '' }}
+          NOTARY_PASSWORD: ${{ steps.developer-id.outputs.enabled == 'true' && secrets.APPLE_APP_PASSWORD || '' }}
+        run: scripts/build-release.sh "$VERSION"
+
+      - name: Create the appcast
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          if [ -z "$SPARKLE_PRIVATE_KEY" ]; then
+            if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+              echo "SPARKLE_PRIVATE_KEY is required to publish a release"
+              exit 1
+            fi
+            echo "No SPARKLE_PRIVATE_KEY: skipping the appcast of this dry run."
+            exit 0
+          fi
+          INFO=build/release/Build/Products/Release/Halo.app/Contents/Info.plist
+          scripts/make-appcast.py "$VERSION" \
+            "$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$INFO")" \
+            "$(/usr/libexec/PlistBuddy -c 'Print LSMinimumSystemVersion' "$INFO")" \
+            "build/artifacts/Halo-$VERSION.zip" \
+            "$RUNNER_TEMP/notes.md" \
+            build/artifacts/appcast.xml
+
+      - name: Keep the files of the dry run
+        if: github.event_name != 'push'
+        uses: actions/upload-artifact@v7
+        with:
+          name: halo-dry-run
+          path: build/artifacts/
+          retention-days: 7
+
+      - name: Publish the release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" build/artifacts/* \
+            --title "Halo $VERSION" \
+            --notes-file "$RUNNER_TEMP/notes.md" \
+            --verify-tag

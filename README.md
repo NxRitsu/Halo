@@ -37,24 +37,35 @@ _Screenshots coming soon._
 Download the latest `.dmg` from the [Releases](https://github.com/NxRitsu/Halo/releases) page and
 drag Halo to your Applications folder.
 
-Halo is not distributed through the Mac App Store and may not be notarized by Apple. The first
-time you open it, macOS may refuse to launch it:
+Halo is free and open source, and its builds aren't notarized by Apple for now. The first time you
+open it, macOS refuses to launch it:
 
 1. Try to open Halo once, then dismiss the warning.
 2. Open **System Settings → Privacy & Security**.
-3. Scroll down and click **Open Anyway** next to the message about Halo.
+3. Scroll down and click **Open Anyway** next to the message about Halo, then confirm.
 
 Halo has no Dock icon. Right-click the island or use the menu bar icon to open its settings.
 
+### Updates
+
+Halo can update itself: on the second launch it asks whether to check for updates automatically,
+and you can change this or check by hand in **Settings → General**. Updates are verified with a
+signature before they are installed.
+
+Without notarization, macOS sees each update as a new app, so permissions such as Accessibility may
+have to be granted again afterwards. If the option no longer works, remove Halo from the list in
+**System Settings → Privacy & Security → Accessibility** and add it back.
+
 ## Privacy
 
-Halo has **no analytics, no telemetry and no account**. Only two kinds of network requests ever
-leave your Mac, and both can be disabled:
+Halo has **no analytics, no telemetry and no account**. Only three kinds of network requests ever
+leave your Mac, and all of them can be disabled:
 
 | Request | Data sent | Why |
 | --- | --- | --- |
 | Lyrics ([LRCLIB](https://lrclib.net)) | Track title, artist, album, duration | To fetch synced lyrics |
 | Weather ([Open-Meteo](https://open-meteo.com)) | Approximate location (reduced accuracy) | To show the current weather |
+| Updates ([GitHub](https://github.com/NxRitsu/Halo/releases)) | Nothing but the request itself, which reveals your IP address to GitHub, like any download | To find and download new versions |
 
 Everything else (media info, battery, Bluetooth, files) stays on your Mac.
 
@@ -74,7 +85,7 @@ open Halo.xcodeproj        # or: xcodebuild -scheme Halo -configuration Debug bu
 
 The `.xcodeproj` is generated from `project.yml` and is not committed. By default the app is signed
 ad hoc. To sign with your own identity, copy `Local.xcconfig.example` to `Local.xcconfig` and set
-your team ID.
+your team ID. Debug builds don't update themselves.
 
 ## FAQ
 
@@ -98,6 +109,7 @@ Open an issue and paste the report from **Settings → Diagnostics → Copy repo
 
 - Lyrics provided by [LRCLIB](https://lrclib.net).
 - Weather data by [Open-Meteo](https://open-meteo.com) (CC BY 4.0).
+- Updates powered by [Sparkle](https://sparkle-project.org).
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
 

@@ -28,3 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - On macOS 27, Halo's controls are disabled when macOS would send them to another app than the
   one on screen, such as a paused video. They come back when that app closes or when playback is
   resumed in the app on screen. Music and Spotify keep working through AppleScript.
+- App icon.
+- Software updates with Sparkle, with an option in the General settings. Debug builds don't update
+  themselves.
+- Release workflow: a version tag publishes a `.dmg`, a `.zip` and an update feed on GitHub. Builds
+  are signed ad hoc, and Developer ID signing with notarization turns on when its secrets exist.

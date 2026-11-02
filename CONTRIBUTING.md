@@ -26,3 +26,19 @@ Never commit `Halo.xcodeproj`: edit `project.yml` instead.
 - Keep pull requests focused, and describe what you changed and how you tested it.
 - Make sure the project builds without warnings.
 - Add an entry to the `Unreleased` section of `CHANGELOG.md`.
+
+## Releasing (maintainers)
+
+1. In `CHANGELOG.md`, rename `Unreleased` to the new version with its date, and add an empty
+   `Unreleased` section above it.
+2. Commit, then push a tag: `git tag v1.2.3 && git push origin main v1.2.3`.
+
+The `Release` workflow builds the app, attaches the `.dmg`, the `.zip` and the `appcast.xml` to a new
+GitHub release, and takes the notes from the changelog. Existing installations find the update
+through the appcast of the latest release. Its secrets are listed at the top of
+`.github/workflows/release.yml`. Running the workflow by hand is a dry run that publishes nothing.
+
+To build locally: `brew install xcodegen create-dmg`, then `scripts/build-release.sh 1.2.3`.
+
+The private key that signs updates only exists in the maintainer's keychain and in a GitHub secret.
+If it's lost, existing installations can no longer be updated automatically.
