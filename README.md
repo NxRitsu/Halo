@@ -59,7 +59,7 @@ and you can change this or check by hand in **Settings → General**. Updates ar
 signature before they are installed.
 
 Permissions such as Accessibility carry over to updates. If you installed a version older than
-0.2.0, macOS will ask for them once more after updating to it: turn Halo on in the system list, then
+0.2.1, macOS will ask for them once more after updating to it: turn Halo on in the system list, then
 use **Reopen Halo** in **Settings → Island**. If the option still doesn't work, remove Halo from the list in
 **System Settings → Privacy & Security → Accessibility** and add it back. macOS 27 renamed this
 section: the **Open System Settings** button in **Settings → Island** goes straight to it.

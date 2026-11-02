@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Releases are signed with a certificate valid for 100 years. Updating from 0.2.0 or older asks for
+  the Accessibility permission one last time.
+
 ## [0.2.0] - 2026-11-02
 
 ### Added
