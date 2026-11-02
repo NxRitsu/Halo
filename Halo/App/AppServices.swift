@@ -8,13 +8,14 @@ final class AppServices {
     let nowPlaying = NowPlayingService()
     let lyrics: LyricsService
     let battery = BatteryService()
+    let bluetooth = BluetoothAudioService()
     let menuBar = MenuBarSpaceMonitor()
     let activities: ActivityCoordinator
     let updates = UpdateService()
 
     private init() {
         lyrics = LyricsService(nowPlaying: nowPlaying)
-        activities = ActivityCoordinator(nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, menuBar: menuBar)
+        activities = ActivityCoordinator(nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth, menuBar: menuBar)
     }
 
     func start() {
@@ -22,6 +23,7 @@ final class AppServices {
         lyrics.setEnabled(Preferences.lyricsEnabled)
         battery.lowThreshold = Preferences.lowBatteryThreshold
         battery.criticalThreshold = Preferences.criticalBatteryThreshold
+        bluetooth.setEnabled(Preferences.bluetoothAudioEnabled)
         activities.showsLowBatteryIndicator = Preferences.lowBatteryIndicator
         activities.mediaWingsMode = Preferences.mediaWingsMode
         updates.start()

@@ -28,7 +28,10 @@ enum VisualScenes {
             view = AnyView(CompactScene(island: services.island(metrics, expanded: false, content: IslandContent(expanded: .nowPlaying, compactShowsMedia: true))))
         case "battery":
             services.setCharging()
-            view = AnyView(BatteryScene(island: services.island(metrics, expanded: false, content: IslandContent(alert: IslandAlert(event: .pluggedIn, id: 1)))))
+            view = AnyView(BatteryScene(island: services.island(metrics, expanded: false, content: IslandContent(alert: IslandAlert(event: .battery(.pluggedIn), id: 1)))))
+        case "airpods":
+            let event = BluetoothAudioEvent(kind: .connected, device: services.showSampleHeadphones())
+            view = AnyView(BluetoothScene(island: services.island(metrics, expanded: false, content: IslandContent(alert: IslandAlert(event: .bluetooth(event), id: 1)))))
         default:
             print("Unknown scene: \(name)")
             exit(1)
@@ -53,13 +56,14 @@ private final class SampleServices {
     let nowPlaying = NowPlayingService()
     let lyrics: LyricsService
     let battery = BatteryService()
+    let bluetooth = BluetoothAudioService()
 
     init() {
         lyrics = LyricsService(nowPlaying: nowPlaying)
     }
 
     func island(_ metrics: IslandMetrics, expanded: Bool, content: IslandContent) -> IslandModel {
-        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery)
+        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth)
         model.isExpanded = expanded
         return model
     }
@@ -80,6 +84,20 @@ private final class SampleServices {
         [01:30.00]Chasing echoes, chasing suns
         [01:36.00]Midnight signal, calling through
         """))
+    }
+
+    func showSampleHeadphones() -> BluetoothAudioDevice {
+        let device = BluetoothAudioDevice(
+            id: "sample",
+            name: "AirPods Pro de Sample",
+            symbol: "airpods.pro",
+            battery: BluetoothBattery(left: 92, right: 18, chargingCase: 64),
+            volume: 40,
+            listeningMode: .noiseCancellation,
+            supportedListeningModes: ListeningMode.allCases
+        )
+        bluetooth.showSample(device)
+        return device
     }
 
     func setCharging() {
@@ -160,6 +178,25 @@ private struct BatteryScene: View {
                 Text(verbatim: "A glance, then it's gone.")
                     .font(.system(size: 42, weight: .bold, design: .rounded))
                 Text(verbatim: "Charging and low battery alerts show for three seconds, then step aside.")
+                    .font(.system(size: 19, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .padding(.bottom, 44)
+            }
+        }
+        .frame(width: 1200, height: 400)
+    }
+}
+
+private struct BluetoothScene: View {
+    let island: IslandModel
+
+    var body: some View {
+        SceneBackdrop(island: island, scale: 1.9) {
+            VStack(spacing: 10) {
+                Spacer(minLength: 0)
+                Text(verbatim: "Connected, at a glance.")
+                    .font(.system(size: 42, weight: .bold, design: .rounded))
+                Text(verbatim: "Battery of each earbud and of the case, as soon as your headphones connect.")
                     .font(.system(size: 19, weight: .medium))
                     .foregroundStyle(.white.opacity(0.75))
                     .padding(.bottom, 44)

@@ -43,7 +43,8 @@ final class IslandWindowController {
             content: services.activities.content,
             nowPlaying: services.nowPlaying,
             lyrics: services.lyrics,
-            battery: services.battery
+            battery: services.battery,
+            bluetooth: services.bluetooth
         )
         panel = IslandPanel(contentRect: metrics.windowFrame(for: model.layout))
 

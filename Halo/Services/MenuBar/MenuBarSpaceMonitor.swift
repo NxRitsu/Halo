@@ -28,6 +28,7 @@ final class MenuBarSpaceMonitor {
         guard enabled != isEnabled else { return }
         isEnabled = enabled
         if enabled {
+            promptIfAccessWasLost()
             startObserving()
             scheduleReads()
         } else {
@@ -42,6 +43,16 @@ final class MenuBarSpaceMonitor {
     func requestAccess() {
         let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
         setTrusted(AXIsProcessTrustedWithOptions(options))
+    }
+
+    /// Without a Developer ID signature, macOS treats each new version as a new app and drops the
+    /// permission without telling anyone. The mode would then silently stop working, so each
+    /// version asks once. The Settings explain the rest if people dismiss this.
+    private func promptIfAccessWasLost() {
+        guard !AXIsProcessTrusted(), UserDefaults.standard.string(forKey: PreferenceKey.accessibilityPromptedBuild) != AppInfo.build else { return }
+        UserDefaults.standard.set(AppInfo.build, forKey: PreferenceKey.accessibilityPromptedBuild)
+        logger.notice("Accessibility permission missing: asking for it")
+        requestAccess()
     }
 
     func refreshAccess() {

@@ -78,8 +78,8 @@ struct IslandMetrics: Equatable {
             }
             return IslandLayout(width: expandedWidth, height: base.height + contentHeight, earRadius: 14, bottomRadius: 32)
         }
-        if content.alert != nil {
-            return alertLayout
+        if let alert = content.alert {
+            return alertLayout(for: alert.event)
         }
         if content.compactHasWings {
             return wingsLayout
@@ -91,8 +91,20 @@ struct IslandMetrics: Equatable {
         IslandLayout(width: base.width + wingWidth * 2, height: base.height, earRadius: 6, bottomRadius: 12)
     }
 
-    private var alertLayout: IslandLayout {
+    private func alertLayout(for event: IslandAlert.Event) -> IslandLayout {
+        switch event {
+        case .battery: batteryAlertLayout
+        case .bluetooth: bluetoothAlertLayout
+        }
+    }
+
+    private var batteryAlertLayout: IslandLayout {
         IslandLayout(width: max(base.width + 140, 340), height: base.height + Self.alertHeight, earRadius: 10, bottomRadius: 24)
+    }
+
+    /// Wider than the battery alert: it holds a device name and up to three gauges.
+    private var bluetoothAlertLayout: IslandLayout {
+        IslandLayout(width: max(base.width + 220, 410), height: base.height + Self.alertHeight, earRadius: 10, bottomRadius: 24)
     }
 
     /// Smallest layout that contains every possible state: the size of the hosted SwiftUI view.
@@ -102,7 +114,7 @@ struct IslandMetrics: Equatable {
                 layout(expanded: true, content: IslandContent(expanded: activity, showsLyrics: lyrics))
             }
         }
-        let all = expanded + [base, wingsLayout, alertLayout]
+        let all = expanded + [base, wingsLayout, batteryAlertLayout, bluetoothAlertLayout]
         return IslandLayout(
             width: all.map(\.totalWidth).max() ?? base.totalWidth,
             height: all.map(\.height).max() ?? base.height,

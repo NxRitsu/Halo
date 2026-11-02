@@ -2,7 +2,12 @@ import Foundation
 
 /// A temporary alert shown on the compact island.
 struct IslandAlert: Equatable {
-    let event: BatteryEvent
+    enum Event: Equatable {
+        case battery(BatteryEvent)
+        case bluetooth(BluetoothAudioEvent)
+    }
+
+    let event: Event
     /// Distinguishes two alerts for the same event, so the second one restarts the timer.
     let id: Int
 }
@@ -35,6 +40,8 @@ struct IslandContent: Equatable {
 @Observable
 final class ActivityCoordinator {
     private static let alertDuration: Duration = .seconds(3)
+    /// Long enough for the volume, which macOS only exposes 2 to 3 s after the connection.
+    private static let connectionAlertDuration: Duration = .seconds(5)
 
     private(set) var content = IslandContent()
     /// Whether the compact island shows the charge when the battery is low.
@@ -48,18 +55,23 @@ final class ActivityCoordinator {
     @ObservationIgnored private let nowPlaying: NowPlayingService
     @ObservationIgnored private let lyrics: LyricsService
     @ObservationIgnored private let battery: BatteryService
+    @ObservationIgnored private let bluetooth: BluetoothAudioService
     @ObservationIgnored private let menuBar: MenuBarSpaceMonitor
     @ObservationIgnored private var pendingMediaHide: Task<Void, Never>?
     @ObservationIgnored private var alertTask: Task<Void, Never>?
     @ObservationIgnored private var alertCount = 0
 
-    init(nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService, menuBar: MenuBarSpaceMonitor) {
+    init(nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService, bluetooth: BluetoothAudioService, menuBar: MenuBarSpaceMonitor) {
         self.nowPlaying = nowPlaying
         self.lyrics = lyrics
         self.battery = battery
+        self.bluetooth = bluetooth
         self.menuBar = menuBar
         battery.onEvent = { [weak self] event in
             self?.batteryEvent(event)
+        }
+        bluetooth.onEvent = { [weak self] event in
+            self?.bluetoothEvent(event)
         }
         observe()
     }
@@ -128,15 +140,20 @@ final class ActivityCoordinator {
         case .low:
             guard Preferences.lowBatteryAlertsEnabled else { return }
         }
-        showAlert(event)
+        showAlert(.battery(event))
     }
 
-    private func showAlert(_ event: BatteryEvent) {
+    private func bluetoothEvent(_ event: BluetoothAudioEvent) {
+        if event.kind == .disconnected, !Preferences.bluetoothDisconnectAlertsEnabled { return }
+        showAlert(.bluetooth(event), duration: event.kind == .connected ? Self.connectionAlertDuration : Self.alertDuration)
+    }
+
+    private func showAlert(_ event: IslandAlert.Event, duration: Duration = alertDuration) {
         alertCount += 1
         content.alert = IslandAlert(event: event, id: alertCount)
         alertTask?.cancel()
         alertTask = Task { [weak self] in
-            try? await Task.sleep(for: Self.alertDuration)
+            try? await Task.sleep(for: duration)
             guard let self, !Task.isCancelled else { return }
             self.alertTask = nil
             self.content.alert = nil

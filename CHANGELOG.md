@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Alerts when Bluetooth audio devices connect or disconnect, with the model icon, the battery of
+  each earbud and of the case, and the volume.
+- Devices settings: connected audio devices and, on AirPods that support it, the listening mode
+  (experimental).
+- Bluetooth status in the Diagnostics tab and its report.
+
+### Changed
+
+- The island asks again for the Accessibility permission when a new version has lost it, instead of
+  silently covering the menus.
+
 ## [0.1.0] - 2026-11-02
 
 ### Added

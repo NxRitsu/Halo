@@ -21,6 +21,26 @@
         }
       }
     },
+    "Adaptive" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptatif"
+          }
+        }
+      }
+    },
+    "Alert when an audio device connects" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerter à la connexion d’un appareil audio"
+          }
+        }
+      }
+    },
     "Alert when the battery is low" : {
       "localizations" : {
         "fr" : {
@@ -61,12 +81,22 @@
         }
       }
     },
-    "Allow %@ under Privacy & Security to measure the menu bar. Until then, playback is always shown." : {
+    "Allow %@ under Privacy & Security to measure the menu bar. If it's already in the list, remove it and add it back: updates can make macOS forget it. Until then, playback is always shown." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisez %@ dans Confidentialité et sécurité pour mesurer la barre des menus. En attendant, la lecture reste toujours affichée."
+            "value" : "Autorisez %@ dans Confidentialité et sécurité pour mesurer la barre des menus. S’il figure déjà dans la liste, retirez-le puis ajoutez-le à nouveau : les mises à jour peuvent le faire oublier à macOS. En attendant, la lecture reste toujours affichée."
+          }
+        }
+      }
+    },
+    "Allow %@ under Privacy & Security → Bluetooth to detect your audio devices." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez %@ dans Confidentialité et sécurité → Bluetooth pour détecter vos appareils audio."
           }
         }
       }
@@ -81,12 +111,32 @@
         }
       }
     },
+    "Also alert when it disconnects" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerter aussi à sa déconnexion"
+          }
+        }
+      }
+    },
     "Always" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toujours"
+          }
+        }
+      }
+    },
+    "Audio device" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareil audio"
           }
         }
       }
@@ -101,12 +151,52 @@
         }
       }
     },
+    "Battery level unavailable" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de batterie indisponible"
+          }
+        }
+      }
+    },
+    "Battery levels and listening modes come from private system properties, so they may be missing on some devices or versions of macOS. Nothing leaves your Mac." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les niveaux de batterie et les modes d’écoute proviennent de propriétés privées du système : ils peuvent manquer sur certains appareils ou versions de macOS. Rien ne quitte votre Mac."
+          }
+        }
+      }
+    },
     "Bluetooth" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bluetooth"
+          }
+        }
+      }
+    },
+    "Bluetooth audio" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio Bluetooth"
+          }
+        }
+      }
+    },
+    "Bluetooth is turned off" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Bluetooth est désactivé"
           }
         }
       }
@@ -201,6 +291,16 @@
         }
       }
     },
+    "Connected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté"
+          }
+        }
+      }
+    },
     "Copied" : {
       "localizations" : {
         "fr" : {
@@ -277,6 +377,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Désactivé"
+          }
+        }
+      }
+    },
+    "Disconnected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté"
           }
         }
       }
@@ -361,6 +471,16 @@
         }
       }
     },
+    "L" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "G"
+          }
+        }
+      }
+    },
     "Last check" : {
       "localizations" : {
         "fr" : {
@@ -377,6 +497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir à l’ouverture de session"
+          }
+        }
+      }
+    },
+    "Listening mode (experimental)" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode d’écoute (expérimental)"
           }
         }
       }
@@ -561,6 +691,16 @@
         }
       }
     },
+    "No audio device connected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun appareil audio connecté"
+          }
+        }
+      }
+    },
     "No battery" : {
       "localizations" : {
         "fr" : {
@@ -581,12 +721,32 @@
         }
       }
     },
+    "Noise Cancellation" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réduction de bruit"
+          }
+        }
+      }
+    },
     "Not allowed" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Non autorisé"
+          }
+        }
+      }
+    },
+    "Not supported on this Mac" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non pris en charge sur ce Mac"
           }
         }
       }
@@ -607,6 +767,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lecture en cours"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
           }
         }
       }
@@ -707,6 +877,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quitter %@"
+          }
+        }
+      }
+    },
+    "R" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D"
           }
         }
       }
@@ -851,6 +1031,16 @@
         }
       }
     },
+    "Status" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "État"
+          }
+        }
+      }
+    },
     "Synced lyrics found" : {
       "localizations" : {
         "fr" : {
@@ -877,6 +1067,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
+    "Transparency" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparence"
           }
         }
       }
@@ -971,6 +1171,16 @@
         }
       }
     },
+    "Volume %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume %@"
+          }
+        }
+      }
+    },
     "When there's room" : {
       "localizations" : {
         "fr" : {
@@ -987,6 +1197,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fonctionnelles"
+          }
+        }
+      }
+    },
+    "Working, without battery levels" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonctionne, sans les niveaux de batterie"
           }
         }
       }

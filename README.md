@@ -28,7 +28,7 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 | ✅ | Now Playing (Apple Music, Spotify, Deezer, browsers…) with playback controls |
 | ✅ | Synced lyrics, cached on your Mac |
 | ✅ | Battery and charging alerts |
-| 🚧 | AirPods and Bluetooth audio alerts with battery levels |
+| ✅ | AirPods and Bluetooth audio alerts with battery levels, volume and listening mode |
 | 🚧 | Weather |
 | 🚧 | File tray (drag and drop, Quick Look, AirDrop) |
 | 🚧 | Audio output picker |
@@ -59,7 +59,8 @@ and you can change this or check by hand in **Settings → General**. Updates ar
 signature before they are installed.
 
 Without notarization, macOS sees each update as a new app, so permissions such as Accessibility may
-have to be granted again afterwards. If the option no longer works, remove Halo from the list in
+have to be granted again afterwards. Halo asks again once per version. If the option still doesn't
+work, remove Halo from the list in
 **System Settings → Privacy & Security → Accessibility** and add it back.
 
 ## Privacy

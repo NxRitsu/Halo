@@ -159,7 +159,7 @@ private struct IslandSettingsView: View {
                     } label: {
                         Label("Permission required", systemImage: "exclamationmark.triangle.fill")
                             .foregroundStyle(.orange)
-                        Text("Allow \(AppInfo.name) under Privacy & Security to measure the menu bar. Until then, playback is always shown.")
+                        Text("Allow \(AppInfo.name) under Privacy & Security to measure the menu bar. If it's already in the list, remove it and add it back: updates can make macOS forget it. Until then, playback is always shown.")
                     }
                 }
             } footer: {
@@ -287,8 +287,11 @@ private struct DevicesSettingsView: View {
     @AppStorage(PreferenceKey.lowBatteryThreshold) private var lowThreshold = 20
     @AppStorage(PreferenceKey.criticalBatteryThreshold) private var criticalThreshold = 10
     @AppStorage(PreferenceKey.lowBatteryIndicator) private var lowBatteryIndicator = true
+    @AppStorage(PreferenceKey.bluetoothAudioEnabled) private var bluetoothAudioEnabled = true
+    @AppStorage(PreferenceKey.bluetoothDisconnectAlertsEnabled) private var bluetoothDisconnectAlertsEnabled = true
     private let battery = AppServices.shared.battery
     private let activities = AppServices.shared.activities
+    private let bluetooth = AppServices.shared.bluetooth
 
     var body: some View {
         Form {
@@ -313,8 +316,30 @@ private struct DevicesSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            Section {
+                Toggle("Alert when an audio device connects", isOn: $bluetoothAudioEnabled)
+                Toggle("Also alert when it disconnects", isOn: $bluetoothDisconnectAlertsEnabled)
+                    .disabled(!bluetoothAudioEnabled)
+                bluetoothStatusRow
+                ForEach(bluetooth.devices) { device in
+                    BluetoothDeviceRow(device: device, bluetooth: bluetooth)
+                }
+            } header: {
+                Text("Bluetooth audio")
+            } footer: {
+                Text("Battery levels and listening modes come from private system properties, so they may be missing on some devices or versions of macOS. Nothing leaves your Mac.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
+        .task(id: bluetooth.status) {
+            guard bluetooth.status == .active else { return }
+            await bluetooth.monitor()
+        }
+        .onChange(of: bluetoothAudioEnabled) { _, enabled in
+            bluetooth.setEnabled(enabled)
+        }
         .onChange(of: lowThreshold) { _, threshold in
             if criticalThreshold >= threshold {
                 criticalThreshold = threshold - 5
@@ -326,6 +351,80 @@ private struct DevicesSettingsView: View {
         }
         .onChange(of: lowBatteryIndicator) { _, shows in
             activities.showsLowBatteryIndicator = shows
+        }
+    }
+
+    @ViewBuilder
+    private var bluetoothStatusRow: some View {
+        switch bluetooth.status {
+        case .disabled:
+            EmptyView()
+        case .starting:
+            LabeledContent("Status") { Text("Starting…") }
+        case .poweredOff:
+            LabeledContent("Status") { Text("Bluetooth is turned off") }
+        case .unsupported:
+            LabeledContent("Status") { Text("Not supported on this Mac") }
+        case .denied:
+            LabeledContent {
+                Button("Open System Settings") {
+                    bluetooth.openPrivacySettings()
+                }
+            } label: {
+                Label("Permission required", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                Text("Allow \(AppInfo.name) under Privacy & Security → Bluetooth to detect your audio devices.")
+            }
+        case .active:
+            if bluetooth.devices.isEmpty {
+                LabeledContent("Status") { Text("No audio device connected") }
+            }
+        }
+    }
+}
+
+/// A connected device: battery, volume and, on AirPods that report it, the listening mode.
+private struct BluetoothDeviceRow: View {
+    let device: BluetoothAudioDevice
+    let bluetooth: BluetoothAudioService
+
+    var body: some View {
+        LabeledContent {
+            if !device.battery.isEmpty {
+                BluetoothBatteryRow(battery: device.battery)
+                    .environment(\.colorScheme, .dark)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(.black, in: .rect(cornerRadius: 8))
+            } else if !bluetooth.canReadBatteries {
+                Text("Battery level unavailable")
+            }
+        } label: {
+            Label(device.name, systemImage: device.symbol)
+            if let volume = device.volume {
+                Text("Volume \(Text(Double(volume) / 100, format: .percent))")
+            }
+        }
+        if let mode = device.listeningMode, !device.supportedListeningModes.isEmpty {
+            Picker("Listening mode (experimental)", selection: Binding(
+                get: { mode },
+                set: { bluetooth.setListeningMode($0, for: device.id) }
+            )) {
+                ForEach(device.supportedListeningModes) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+        }
+    }
+}
+
+private extension ListeningMode {
+    var title: LocalizedStringResource {
+        switch self {
+        case .off: "Off"
+        case .noiseCancellation: "Noise Cancellation"
+        case .transparency: "Transparency"
+        case .adaptive: "Adaptive"
         }
     }
 }

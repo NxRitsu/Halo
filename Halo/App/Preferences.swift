@@ -16,6 +16,10 @@ enum PreferenceKey {
     static let lowBatteryThreshold = "lowBatteryThreshold"
     static let criticalBatteryThreshold = "criticalBatteryThreshold"
     static let lowBatteryIndicator = "lowBatteryIndicator"
+    /// Version that last asked for the Accessibility permission. Not a setting.
+    static let accessibilityPromptedBuild = "accessibilityPromptedBuild"
+    static let bluetoothAudioEnabled = "bluetoothAudioEnabled"
+    static let bluetoothDisconnectAlertsEnabled = "bluetoothDisconnectAlertsEnabled"
 }
 
 /// Which displays show an island.
@@ -56,6 +60,8 @@ enum Preferences {
             PreferenceKey.lowBatteryThreshold: 20,
             PreferenceKey.criticalBatteryThreshold: 10,
             PreferenceKey.lowBatteryIndicator: true,
+            PreferenceKey.bluetoothAudioEnabled: true,
+            PreferenceKey.bluetoothDisconnectAlertsEnabled: true,
         ]
     }
 
@@ -109,5 +115,13 @@ enum Preferences {
 
     static var lowBatteryIndicator: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.lowBatteryIndicator)
+    }
+
+    static var bluetoothAudioEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.bluetoothAudioEnabled)
+    }
+
+    static var bluetoothDisconnectAlertsEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.bluetoothDisconnectAlertsEnabled)
     }
 }

@@ -30,10 +30,7 @@ enum DiagnosticsReport {
             batteryStatus(services.battery),
             menuBarStatus(services.menuBar),
             updatesStatus(services.updates),
-            ServiceStatus(
-                title: "Bluetooth", detail: "Planned for a later version", level: .neutral,
-                reportName: "Bluetooth", reportValue: "not used by this version"
-            ),
+            bluetoothStatus(services.bluetooth),
             ServiceStatus(
                 title: "Location", detail: "Planned for a later version", level: .neutral,
                 reportName: "Location", reportValue: "not used by this version"
@@ -109,6 +106,27 @@ enum DiagnosticsReport {
         }
     }
 
+    private static func bluetoothStatus(_ bluetooth: BluetoothAudioService) -> ServiceStatus {
+        let title: LocalizedStringResource = "Bluetooth"
+        let name = "Bluetooth"
+        switch bluetooth.status {
+        case .disabled:
+            return ServiceStatus(title: title, detail: "Disabled", level: .neutral, reportName: name, reportValue: "disabled")
+        case .starting:
+            return ServiceStatus(title: title, detail: "Starting…", level: .neutral, reportName: name, reportValue: "starting")
+        case .poweredOff:
+            return ServiceStatus(title: title, detail: "Bluetooth is turned off", level: .neutral, reportName: name, reportValue: "turned off")
+        case .denied:
+            return ServiceStatus(title: title, detail: "Not allowed", level: .warning, reportName: name, reportValue: "permission denied")
+        case .unsupported:
+            return ServiceStatus(title: title, detail: "Not supported on this Mac", level: .neutral, reportName: name, reportValue: "not supported")
+        case .active where bluetooth.canReadBatteries:
+            return ServiceStatus(title: title, detail: "Working", level: .ok, reportName: name, reportValue: "working, \(bluetooth.devices.count) audio device(s) connected")
+        case .active:
+            return ServiceStatus(title: title, detail: "Working, without battery levels", level: .warning, reportName: name, reportValue: "working, battery properties unavailable, \(bluetooth.devices.count) audio device(s) connected")
+        }
+    }
+
     private static func batteryStatus(_ battery: BatteryService) -> ServiceStatus {
         guard let state = battery.state else {
             return ServiceStatus(title: "Battery", detail: "No battery", level: .neutral, reportName: "Battery", reportValue: "none")
@@ -155,6 +173,8 @@ enum DiagnosticsReport {
             ("Lyrics", onOff(Preferences.lyricsEnabled)),
             ("Power alerts", onOff(Preferences.powerAlertsEnabled)),
             ("Low battery alerts", onOff(Preferences.lowBatteryAlertsEnabled)),
+            ("Bluetooth audio alerts", onOff(Preferences.bluetoothAudioEnabled)),
+            ("Bluetooth disconnection alerts", onOff(Preferences.bluetoothDisconnectAlertsEnabled)),
         ]
     }
 

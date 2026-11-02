@@ -36,6 +36,24 @@
           }
         }
       }
+    },
+    "NSBluetoothAlwaysUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Always Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo detects when your AirPods or other Bluetooth audio devices connect, and shows their battery level. Nothing leaves your Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo détecte la connexion de vos AirPods et autres appareils audio Bluetooth, et affiche leur niveau de batterie. Rien ne quitte votre Mac."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

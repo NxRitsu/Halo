@@ -10,16 +10,18 @@ final class IslandModel {
     let nowPlaying: NowPlayingService
     let lyrics: LyricsService
     let battery: BatteryService
+    let bluetooth: BluetoothAudioService
 
     /// Called when the user clicks the island.
     var onTap: () -> Void = {}
 
-    init(metrics: IslandMetrics, content: IslandContent, nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService) {
+    init(metrics: IslandMetrics, content: IslandContent, nowPlaying: NowPlayingService, lyrics: LyricsService, battery: BatteryService, bluetooth: BluetoothAudioService) {
         self.metrics = metrics
         self.content = content
         self.nowPlaying = nowPlaying
         self.lyrics = lyrics
         self.battery = battery
+        self.bluetooth = bluetooth
     }
 
     var layout: IslandLayout {

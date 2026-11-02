@@ -48,7 +48,7 @@ struct IslandView: View {
             .frame(width: layout.totalWidth, height: layout.height, alignment: .top)
             .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
         } else if let alert = model.content.alert {
-            BatteryAlertView(event: alert.event, battery: model.battery)
+            alertView(alert)
                 .id(alert.id)
                 .padding(.top, model.metrics.base.height + 2)
                 .padding(.horizontal, layout.earRadius + 18)
@@ -64,6 +64,16 @@ struct IslandView: View {
                 wingWidth: model.metrics.wingWidth
             )
             .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private func alertView(_ alert: IslandAlert) -> some View {
+        switch alert.event {
+        case .battery(let event):
+            BatteryAlertView(event: event, battery: model.battery)
+        case .bluetooth(let event):
+            BluetoothAlertView(event: event, bluetooth: model.bluetooth)
         }
     }
 }
