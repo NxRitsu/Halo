@@ -10,6 +10,11 @@ enum PreferenceKey {
     static let hideInFullScreen = "hideInFullScreen"
     static let nowPlayingEnabled = "nowPlayingEnabled"
     static let lyricsEnabled = "lyricsEnabled"
+    static let powerAlertsEnabled = "powerAlertsEnabled"
+    static let lowBatteryAlertsEnabled = "lowBatteryAlertsEnabled"
+    static let lowBatteryThreshold = "lowBatteryThreshold"
+    static let criticalBatteryThreshold = "criticalBatteryThreshold"
+    static let lowBatteryIndicator = "lowBatteryIndicator"
 }
 
 /// Which displays show an island.
@@ -34,6 +39,11 @@ enum Preferences {
             PreferenceKey.hideInFullScreen: true,
             PreferenceKey.nowPlayingEnabled: true,
             PreferenceKey.lyricsEnabled: true,
+            PreferenceKey.powerAlertsEnabled: true,
+            PreferenceKey.lowBatteryAlertsEnabled: true,
+            PreferenceKey.lowBatteryThreshold: 20,
+            PreferenceKey.criticalBatteryThreshold: 10,
+            PreferenceKey.lowBatteryIndicator: true,
         ]
     }
 
@@ -63,5 +73,25 @@ enum Preferences {
 
     static var lyricsEnabled: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.lyricsEnabled)
+    }
+
+    static var powerAlertsEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.powerAlertsEnabled)
+    }
+
+    static var lowBatteryAlertsEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.lowBatteryAlertsEnabled)
+    }
+
+    static var lowBatteryThreshold: Int {
+        UserDefaults.standard.integer(forKey: PreferenceKey.lowBatteryThreshold)
+    }
+
+    static var criticalBatteryThreshold: Int {
+        UserDefaults.standard.integer(forKey: PreferenceKey.criticalBatteryThreshold)
+    }
+
+    static var lowBatteryIndicator: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.lowBatteryIndicator)
     }
 }

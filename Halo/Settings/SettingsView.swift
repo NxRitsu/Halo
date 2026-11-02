@@ -15,6 +15,9 @@ struct SettingsView: View {
             Tab("Lyrics", systemImage: "quote.bubble") {
                 LyricsSettingsView()
             }
+            Tab("Devices", systemImage: "laptopcomputer") {
+                DevicesSettingsView()
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .frame(width: 520, height: 360)
@@ -202,6 +205,55 @@ private struct LyricsSettingsView: View {
         case .unavailable(let retryAt):
             Label("LRCLIB is unavailable, next try at \(retryAt.formatted(date: .omitted, time: .shortened))", systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange)
+        }
+    }
+}
+
+private struct DevicesSettingsView: View {
+    @AppStorage(PreferenceKey.powerAlertsEnabled) private var powerAlertsEnabled = true
+    @AppStorage(PreferenceKey.lowBatteryAlertsEnabled) private var lowBatteryAlertsEnabled = true
+    @AppStorage(PreferenceKey.lowBatteryThreshold) private var lowThreshold = 20
+    @AppStorage(PreferenceKey.criticalBatteryThreshold) private var criticalThreshold = 10
+    @AppStorage(PreferenceKey.lowBatteryIndicator) private var lowBatteryIndicator = true
+    private let battery = AppServices.shared.battery
+    private let activities = AppServices.shared.activities
+
+    var body: some View {
+        Form {
+            Section("Battery") {
+                if let state = battery.state {
+                    LabeledContent("Charge") {
+                        Text(state.level, format: .percent)
+                            .monospacedDigit()
+                    }
+                    Toggle("Alert when the power adapter is connected or disconnected", isOn: $powerAlertsEnabled)
+                    Toggle("Alert when the battery is low", isOn: $lowBatteryAlertsEnabled)
+                    Stepper(value: $lowThreshold, in: 10...50, step: 5) {
+                        LabeledContent("Low battery", value: lowThreshold, format: .percent)
+                    }
+                    Stepper(value: $criticalThreshold, in: 5...(lowThreshold - 5), step: 5) {
+                        LabeledContent("Very low battery", value: criticalThreshold, format: .percent)
+                    }
+                    .disabled(!lowBatteryAlertsEnabled)
+                    Toggle("Show the charge on the island when the battery is low", isOn: $lowBatteryIndicator)
+                } else {
+                    Text("This Mac has no battery.")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .onChange(of: lowThreshold) { _, threshold in
+            if criticalThreshold >= threshold {
+                criticalThreshold = threshold - 5
+            }
+            battery.lowThreshold = threshold
+        }
+        .onChange(of: criticalThreshold) { _, threshold in
+            battery.criticalThreshold = threshold
+        }
+        .onChange(of: lowBatteryIndicator) { _, shows in
+            activities.showsLowBatteryIndicator = shows
         }
     }
 }

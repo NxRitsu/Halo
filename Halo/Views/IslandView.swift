@@ -47,9 +47,23 @@ struct IslandView: View {
             .padding(.bottom, 16)
             .frame(width: layout.totalWidth, height: layout.height, alignment: .top)
             .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
-        } else if model.content.compactShowsMedia {
-            CompactNowPlayingView(nowPlaying: model.nowPlaying, layout: layout, wingWidth: model.metrics.wingWidth)
-                .transition(.opacity)
+        } else if let alert = model.content.alert {
+            BatteryAlertView(event: alert.event, battery: model.battery)
+                .id(alert.id)
+                .padding(.top, model.metrics.base.height + 2)
+                .padding(.horizontal, layout.earRadius + 18)
+                .padding(.bottom, 6)
+                .frame(width: layout.totalWidth, height: layout.height, alignment: .top)
+                .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
+        } else if model.content.compactHasWings {
+            CompactWingsView(
+                nowPlaying: model.nowPlaying,
+                battery: model.battery,
+                content: model.content,
+                layout: layout,
+                wingWidth: model.metrics.wingWidth
+            )
+            .transition(.opacity)
         }
     }
 }

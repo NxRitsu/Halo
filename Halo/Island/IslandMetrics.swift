@@ -58,6 +58,9 @@ struct IslandMetrics: Equatable {
     /// Height of the synced lyrics area in the expanded player, spacing included.
     static let lyricsHeight: CGFloat = 86
 
+    /// Height of the alert area below the notch.
+    static let alertHeight: CGFloat = 50
+
     func layout(expanded: Bool, content: IslandContent) -> IslandLayout {
         if expanded {
             let contentHeight: CGFloat = switch content.expanded {
@@ -66,31 +69,31 @@ struct IslandMetrics: Equatable {
             }
             return IslandLayout(width: expandedWidth, height: base.height + contentHeight, earRadius: 14, bottomRadius: 32)
         }
-        if content.compactShowsMedia {
-            return IslandLayout(
-                width: base.width + wingWidth * 2,
-                height: base.height,
-                earRadius: 6,
-                bottomRadius: 12
-            )
+        if content.alert != nil {
+            return alertLayout
+        }
+        if content.compactHasWings {
+            return wingsLayout
         }
         return base
     }
 
+    private var wingsLayout: IslandLayout {
+        IslandLayout(width: base.width + wingWidth * 2, height: base.height, earRadius: 6, bottomRadius: 12)
+    }
+
+    private var alertLayout: IslandLayout {
+        IslandLayout(width: max(base.width + 140, 340), height: base.height + Self.alertHeight, earRadius: 10, bottomRadius: 24)
+    }
+
     /// Smallest layout that contains every possible state: the size of the hosted SwiftUI view.
     var largest: IslandLayout {
-        let all = [false, true].flatMap { expanded in
-            [IslandContent.Activity.idle, .nowPlaying].flatMap { activity in
-                [false, true].flatMap { media in
-                    [false, true].map { lyrics in
-                        layout(
-                            expanded: expanded,
-                            content: IslandContent(expanded: activity, compactShowsMedia: media, showsLyrics: lyrics)
-                        )
-                    }
-                }
+        let expanded = [IslandContent.Activity.idle, .nowPlaying].flatMap { activity in
+            [false, true].map { lyrics in
+                layout(expanded: true, content: IslandContent(expanded: activity, showsLyrics: lyrics))
             }
         }
+        let all = expanded + [base, wingsLayout, alertLayout]
         return IslandLayout(
             width: all.map(\.totalWidth).max() ?? base.totalWidth,
             height: all.map(\.height).max() ?? base.height,
