@@ -17,8 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Releases are signed with a stable self-signed certificate, so permissions survive updates.
+  Updating from 0.1.0 asks for the Accessibility permission one last time.
 - The island asks again for the Accessibility permission when a new version has lost it, instead of
-  silently covering the menus.
+  silently covering the menus, and the settings can reopen Halo once it is granted.
 
 ## [0.1.0] - 2026-11-02
 
