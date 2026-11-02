@@ -36,18 +36,42 @@ struct ExpandedNowPlayingView: View {
                 PlaybackProgressView(nowPlaying: nowPlaying)
             }
 
-            HStack(spacing: 30) {
-                IslandControlButton(systemImage: "backward.fill", size: 17) {
-                    nowPlaying.previousTrack()
+            if nowPlaying.isControllable {
+                HStack(spacing: 30) {
+                    IslandControlButton(systemImage: "backward.fill", size: 17) {
+                        nowPlaying.previousTrack()
+                    }
+                    IslandControlButton(systemImage: nowPlaying.isPlaying ? "pause.fill" : "play.fill", size: 22, prominent: true) {
+                        nowPlaying.togglePlayPause()
+                    }
+                    IslandControlButton(systemImage: "forward.fill", size: 17) {
+                        nowPlaying.nextTrack()
+                    }
                 }
-                IslandControlButton(systemImage: nowPlaying.isPlaying ? "pause.fill" : "play.fill", size: 22, prominent: true) {
-                    nowPlaying.togglePlayPause()
-                }
-                IslandControlButton(systemImage: "forward.fill", size: 17) {
-                    nowPlaying.nextTrack()
-                }
+            } else {
+                controlsUnavailable
             }
         }
+    }
+
+    /// Shown instead of the controls while macOS sends media commands to another app.
+    private var controlsUnavailable: some View {
+        HStack(spacing: 12) {
+            Text("macOS sends the controls to another app. Close it, or pause and resume in this app.")
+                .font(.system(size: 11))
+                .foregroundStyle(.white.opacity(0.6))
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button("Open App", action: openPlayerApp)
+                .buttonStyle(.plain)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .frame(height: 28)
+                .glassEffect(.regular.interactive(), in: .capsule)
+        }
+        .frame(height: 40)
     }
 
     private var artwork: some View {

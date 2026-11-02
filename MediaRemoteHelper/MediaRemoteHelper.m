@@ -16,6 +16,11 @@
 // commands to it. The per-client functions are undocumented; their signatures were read from the
 // MediaRemote binary on macOS 26 and they are only used when all of them can be resolved.
 //
+// Since macOS 27 a command can no longer target such an app: mediaremoted redirects it to the
+// system's now playing app, which is not the app on screen, and refuses to change that app
+// ("Operation not permitted"). So on these versions the helper drops the command and reports
+// `"controllable": false`, and Halo disables its controls.
+//
 // Updates are driven by MediaRemote notifications (no polling). In Perl, the process exits when
 // stdin is closed, so it never outlives Halo.
 
@@ -33,8 +38,11 @@ typedef void (*MRGetNowPlayingClientsFunction)(dispatch_queue_t, void (^)(NSArra
 typedef int (*MRClientGetProcessIdentifierFunction)(id);
 // (client, origin, queue, completion) — a nil origin means this Mac.
 typedef void (*MRGetPlaybackStateForClientFunction)(id, id, dispatch_queue_t, void (^)(unsigned int));
-// (client, origin, unknown (nil), queue, completion)
-typedef void (*MRGetNowPlayingInfoForClientFunction)(id, id, id, dispatch_queue_t, void (^)(NSDictionary *));
+// (client, origin, includeArtwork, queue, completion). The completion receives the info without
+// its artwork, then an artwork object when requested. `MRMediaRemoteGetNowPlayingInfo` is built on
+// this function and merges the two.
+typedef void (*MRGetNowPlayingInfoForClientFunction)(id, id, BOOL, dispatch_queue_t, void (^)(NSDictionary *, void *));
+typedef CFDataRef (*MRArtworkCopyImageDataFunction)(void *);
 // (command, options, origin, client, flags, queue, completion)
 typedef Boolean (*MRSendCommandToClientFunction)(int, NSDictionary *, id, id, unsigned long, dispatch_queue_t, void (^)(id));
 
@@ -62,6 +70,7 @@ static struct {
     MRClientGetProcessIdentifierFunction clientProcessIdentifier;
     MRGetPlaybackStateForClientFunction getPlaybackStateForClient;
     MRGetNowPlayingInfoForClientFunction getNowPlayingInfoForClient;
+    MRArtworkCopyImageDataFunction artworkCopyImageData;
     MRSendCommandToClientFunction sendCommandToClient;
 } MR;
 
@@ -71,6 +80,7 @@ static dispatch_queue_t helperQueue;
 static HaloMediaRemoteEmitFunction emitFunction;
 static void *emitContext;
 static NSString *lastArtworkIdentifier;
+static NSString *lastArtworkMediaKey;
 static uint64_t fetchGeneration;
 /// Client reported instead of the system's now playing app, or nil. Commands are sent to it.
 static id selectedClient;
@@ -116,6 +126,7 @@ static BOOL loadMediaRemote(void) {
     MR.clientProcessIdentifier = dlsym(handle, "MRNowPlayingClientGetProcessIdentifier");
     MR.getPlaybackStateForClient = dlsym(handle, "MRMediaRemoteGetPlaybackStateForClient");
     MR.getNowPlayingInfoForClient = dlsym(handle, "MRMediaRemoteGetNowPlayingInfoForClient");
+    MR.artworkCopyImageData = dlsym(handle, "MRNowPlayingArtworkCopyImageData");
     MR.sendCommandToClient = dlsym(handle, "MRMediaRemoteSendCommandToClient");
     return MR.registerForNotifications && MR.getNowPlayingInfo && MR.getIsPlaying && MR.sendCommand;
 }
@@ -128,6 +139,12 @@ static id jsonValue(id value) {
         return @([(NSDate *)value timeIntervalSince1970]);
     }
     return nil;
+}
+
+/// Whether a command can reach an app other than the system's now playing app.
+static BOOL canTargetClients(void) {
+    static NSOperatingSystemVersion firstBlocked = { 27, 0, 0 };
+    return ![NSProcessInfo.processInfo isOperatingSystemAtLeastVersion:firstBlocked];
 }
 
 static void emitNowPlaying(NSDictionary *info, BOOL isPlaying, NSString *bundleIdentifier, NSString *parentBundleIdentifier) {
@@ -154,6 +171,7 @@ static void emitNowPlaying(NSDictionary *info, BOOL isPlaying, NSString *bundleI
         }
     }];
     message[@"playing"] = @(isPlaying);
+    message[@"controllable"] = @((BOOL)(selectedClient == nil || canTargetClients()));
     if (bundleIdentifier.length > 0) {
         message[@"bundleIdentifier"] = bundleIdentifier;
     }
@@ -161,7 +179,14 @@ static void emitNowPlaying(NSDictionary *info, BOOL isPlaying, NSString *bundleI
         message[@"parentBundleIdentifier"] = parentBundleIdentifier;
     }
 
-    // Artwork is only sent when it changes, since it can weigh hundreds of kilobytes.
+    // Artwork is only sent when it changes, since it can weigh hundreds of kilobytes. Some apps
+    // (Deezer) republish their info every second, briefly without artwork: that doesn't count as
+    // a change unless the track is a different one.
+    NSString *mediaKey = [NSString stringWithFormat:@"%@|%@|%@", message[@"title"], message[@"artist"], bundleIdentifier];
+    if (![mediaKey isEqualToString:lastArtworkMediaKey]) {
+        lastArtworkMediaKey = mediaKey;
+        lastArtworkIdentifier = nil;
+    }
     NSData *artwork = info[@"kMRMediaRemoteNowPlayingInfoArtworkData"];
     if ([artwork isKindOfClass:NSData.class] && artwork.length > 0) {
         NSString *identifier = [NSString stringWithFormat:@"%lu-%lu", (unsigned long)artwork.length, (unsigned long)artwork.hash];
@@ -170,8 +195,6 @@ static void emitNowPlaying(NSDictionary *info, BOOL isPlaying, NSString *bundleI
             message[@"artwork"] = [artwork base64EncodedStringWithOptions:0];
             lastArtworkIdentifier = identifier;
         }
-    } else {
-        lastArtworkIdentifier = nil;
     }
     emit(message);
 }
@@ -222,6 +245,19 @@ static void findPlayingClient(id excluded, void (^completion)(id playingClient, 
     });
 }
 
+static NSDictionary *infoAddingArtwork(NSDictionary *info, void *artwork) {
+    if (artwork == NULL || MR.artworkCopyImageData == NULL) {
+        return info;
+    }
+    NSData *data = CFBridgingRelease(MR.artworkCopyImageData(artwork));
+    if (data.length == 0) {
+        return info;
+    }
+    NSMutableDictionary *merged = [info mutableCopy];
+    merged[@"kMRMediaRemoteNowPlayingInfoArtworkData"] = data;
+    return merged;
+}
+
 static void fetchNowPlaying(void) {
     MR.getNowPlayingInfo(helperQueue, ^(NSDictionary *info) {
         MR.getIsPlaying(helperQueue, ^(BOOL isPlaying) {
@@ -244,14 +280,14 @@ static void fetchNowPlaying(void) {
                         emitClient(info, NO, client);
                         return;
                     }
-                    MR.getNowPlayingInfoForClient(other, nil, nil, helperQueue, ^(NSDictionary *otherInfo) {
+                    MR.getNowPlayingInfoForClient(other, nil, MR.artworkCopyImageData != NULL, helperQueue, ^(NSDictionary *otherInfo, void *artwork) {
                         if (otherInfo.count == 0) {
                             selectedClient = nil;
                             emitClient(info, NO, client);
                             return;
                         }
                         selectedClient = other;
-                        emitClient(otherInfo, other == playingClient, other);
+                        emitClient(infoAddingArtwork(otherInfo, artwork), other == playingClient, other);
                     });
                 });
             });
@@ -270,9 +306,12 @@ static void scheduleFetch(void) {
 }
 
 /// Sends a command to the selected client when there is one, else to the system's now playing app.
+/// A command that can't reach the selected client is dropped, so it never acts on another app.
 static void sendCommand(int command, NSDictionary *options) {
-    if (selectedClient != nil && MR.sendCommandToClient != NULL) {
-        MR.sendCommandToClient(command, options, nil, selectedClient, 0, helperQueue, ^(id result) {});
+    if (selectedClient != nil) {
+        if (canTargetClients() && MR.sendCommandToClient != NULL) {
+            MR.sendCommandToClient(command, options, nil, selectedClient, 0, helperQueue, ^(id result) {});
+        }
     } else {
         MR.sendCommand(command, options);
     }

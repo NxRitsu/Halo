@@ -38,6 +38,8 @@ struct PlaybackProgressView: View {
                     .animation(.spring(response: 0.25, dampingFraction: 0.8), value: isDragging)
                 }
                 .frame(height: 14)
+                .allowsHitTesting(nowPlaying.isControllable)
+                .opacity(nowPlaying.isControllable ? 1 : 0.4)
                 TimeLabel(seconds: -(duration - elapsed))
                     .frame(width: 42, alignment: .trailing)
             }

@@ -9,6 +9,11 @@ struct NowPlayingTrack: Equatable {
     var album: String
     var duration: TimeInterval?
     var bundleIdentifier: String?
+
+    /// Whether both describe the same media, even if details such as the duration were refined.
+    func isSameMedia(as other: NowPlayingTrack) -> Bool {
+        title == other.title && artist == other.artist && bundleIdentifier == other.bundleIdentifier
+    }
 }
 
 /// Playback position, extrapolated from the last report while playing.
@@ -49,11 +54,17 @@ final class NowPlayingService {
     private(set) var artwork: NSImage?
     /// Average color of the artwork, brightened for use on a black background.
     private(set) var artworkTint: NSColor?
+    /// Whether Halo's controls can reach the app on screen. When they can't, they are disabled:
+    /// macOS would otherwise send them to the app it considers current, such as a paused video.
+    private(set) var isControllable = true
 
     @ObservationIgnored private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Halo", category: "NowPlaying")
     @ObservationIgnored private var source: NowPlayingSource?
     @ObservationIgnored private var artworkIdentifier: String?
+    /// Set when commands must bypass the source because it can't reach the app on screen.
+    @ObservationIgnored private var scriptedPlayer: ScriptablePlayer?
     @ObservationIgnored private var pendingClear: Task<Void, Never>?
+    @ObservationIgnored private var pendingArtworkClear: Task<Void, Never>?
     @ObservationIgnored private var optimisticPlayingState: (isPlaying: Bool, until: Date)?
     @ObservationIgnored private var restartAttempts = 0
     @ObservationIgnored private var restartTask: Task<Void, Never>?
@@ -153,8 +164,16 @@ final class NowPlayingService {
             duration: snapshot.duration,
             bundleIdentifier: snapshot.bundleIdentifier
         )
+        let isSameMedia = track?.isSameMedia(as: newTrack) ?? false
         if newTrack != track {
             track = newTrack
+        }
+
+        let player = snapshot.isControllable ? nil : snapshot.bundleIdentifier.flatMap(ScriptablePlayer.init(rawValue:))
+        scriptedPlayer = player
+        let controllable = snapshot.isControllable || player != nil
+        if controllable != isControllable {
+            isControllable = controllable
         }
 
         var playing = snapshot.isPlaying
@@ -180,13 +199,34 @@ final class NowPlayingService {
         }
 
         if let data = snapshot.artworkData {
+            cancelArtworkClear()
             artworkIdentifier = snapshot.artworkIdentifier
             setArtwork(from: data)
-        } else if snapshot.artworkIdentifier == nil, artworkIdentifier != nil || artwork != nil {
-            artworkIdentifier = nil
-            artwork = nil
-            artworkTint = nil
+        } else if snapshot.artworkIdentifier != nil {
+            cancelArtworkClear()
+        } else if !isSameMedia, artwork != nil {
+            scheduleArtworkClear()
         }
+    }
+
+    /// Some apps report a new track or republish its info without artwork, and send the artwork
+    /// right after. So missing artwork never removes the current one for the same track, and
+    /// only removes it after a delay for a new track.
+    private func scheduleArtworkClear() {
+        guard pendingArtworkClear == nil else { return }
+        pendingArtworkClear = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            guard let self, !Task.isCancelled else { return }
+            self.pendingArtworkClear = nil
+            self.artworkIdentifier = nil
+            self.artwork = nil
+            self.artworkTint = nil
+        }
+    }
+
+    private func cancelArtworkClear() {
+        pendingArtworkClear?.cancel()
+        pendingArtworkClear = nil
     }
 
     /// Sources briefly report an empty session when playback moves from one app to another
@@ -205,6 +245,7 @@ final class NowPlayingService {
     private func clear() {
         pendingClear?.cancel()
         pendingClear = nil
+        cancelArtworkClear()
         track = nil
         isPlaying = false
         position = nil
@@ -212,6 +253,8 @@ final class NowPlayingService {
         artworkTint = nil
         artworkIdentifier = nil
         optimisticPlayingState = nil
+        scriptedPlayer = nil
+        isControllable = true
     }
 
     /// Decodes the artwork directly at its largest display size, so full-size images never stay in memory.
@@ -261,25 +304,37 @@ final class NowPlayingService {
     }
 
     func togglePlayPause() {
+        guard isControllable else { return }
         let playing = !isPlaying
         setOptimisticPlaying(playing)
-        source?.send(playing ? .play : .pause)
+        send(playing ? .play : .pause)
     }
 
     func nextTrack() {
-        source?.send(.nextTrack)
+        guard isControllable else { return }
+        send(.nextTrack)
         if position != nil {
             position = PlaybackPosition(elapsed: 0, date: .now, isAdvancing: false)
         }
     }
 
     func previousTrack() {
-        source?.send(.previousTrack)
+        guard isControllable else { return }
+        send(.previousTrack)
     }
 
     func seek(to time: TimeInterval) {
+        guard isControllable else { return }
         position = PlaybackPosition(elapsed: time, date: .now, isAdvancing: isPlaying)
-        source?.send(.seek(time))
+        send(.seek(time))
+    }
+
+    private func send(_ command: MediaCommand) {
+        if let scriptedPlayer {
+            scriptedPlayer.send(command)
+        } else {
+            source?.send(command)
+        }
     }
 
     private func setOptimisticPlaying(_ playing: Bool) {

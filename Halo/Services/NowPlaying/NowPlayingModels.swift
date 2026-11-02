@@ -46,6 +46,8 @@ struct NowPlayingSnapshot: Sendable, Equatable {
     var artworkIdentifier: String?
     /// Only present when the artwork changed since the previous snapshot.
     var artworkData: Data?
+    /// Whether the source's commands reach this app. macOS may keep them on another app.
+    var isControllable = true
 }
 
 enum NowPlayingEvent: Sendable {
@@ -81,7 +83,8 @@ enum NowPlayingEvent: Sendable {
                 isPlaying: (message["playing"] as? Bool ?? false) || rate > 0,
                 bundleIdentifier: parent ?? message["bundleIdentifier"] as? String,
                 artworkIdentifier: message["artworkIdentifier"] as? String,
-                artworkData: (message["artwork"] as? String).flatMap { Data(base64Encoded: $0) }
+                artworkData: (message["artwork"] as? String).flatMap { Data(base64Encoded: $0) },
+                isControllable: message["controllable"] as? Bool ?? true
             ))
         default:
             return nil

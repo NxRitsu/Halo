@@ -1,12 +1,42 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ remaining" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ restantes"
+          }
+        }
+      }
+    },
     "%@ Settings" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réglages de %@"
+          }
+        }
+      }
+    },
+    "Alert when the battery is low" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerter quand la batterie est faible"
+          }
+        }
+      }
+    },
+    "Alert when the power adapter is connected or disconnected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerter au branchement et au débranchement du chargeur"
           }
         }
       }
@@ -31,12 +61,52 @@
         }
       }
     },
+    "Battery" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie"
+          }
+        }
+      }
+    },
     "Built-in display" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écran intégré"
+          }
+        }
+      }
+    },
+    "Charge" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge"
+          }
+        }
+      }
+    },
+    "Charging" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En charge"
+          }
+        }
+      }
+    },
+    "Charging on hold" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge en attente"
           }
         }
       }
@@ -61,12 +131,32 @@
         }
       }
     },
+    "Connect your power adapter" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Branchez le chargeur"
+          }
+        }
+      }
+    },
     "Current track" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Morceau en cours"
+          }
+        }
+      }
+    },
+    "Devices" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils"
           }
         }
       }
@@ -87,6 +177,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agrandir au survol"
+          }
+        }
+      }
+    },
+    "Full in %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pleine dans %@"
+          }
+        }
+      }
+    },
+    "Fully charged" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargée"
           }
         }
       }
@@ -151,6 +261,16 @@
         }
       }
     },
+    "Low battery" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie faible"
+          }
+        }
+      }
+    },
     "LRCLIB is unavailable, next try at %@" : {
       "localizations" : {
         "fr" : {
@@ -187,6 +307,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS restreint l’accès à la lecture en cours. Halo la lit via un processus système (/usr/bin/perl), ou se limite à Musique et Spotify en dernier recours."
+          }
+        }
+      }
+    },
+    "macOS sends the controls to another app. Close it, or pause and resume in this app." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS envoie les commandes à une autre app.\nFerme-la, ou fais pause puis lecture dans cette app."
           }
         }
       }
@@ -261,12 +391,42 @@
         }
       }
     },
+    "On battery" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur batterie"
+          }
+        }
+      }
+    },
     "On displays without a notch, a virtual island is shown at the top of the screen." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sur les écrans sans encoche, une île virtuelle s’affiche en haut de l’écran."
+          }
+        }
+      }
+    },
+    "Open App" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l’app"
+          }
+        }
+      }
+    },
+    "Plugged in" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Branché"
           }
         }
       }
@@ -351,6 +511,16 @@
         }
       }
     },
+    "Show the charge on the island when the battery is low" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la charge sur l’île quand la batterie est faible"
+          }
+        }
+      }
+    },
     "Show the island on" : {
       "localizations" : {
         "fr" : {
@@ -401,6 +571,16 @@
         }
       }
     },
+    "This Mac has no battery." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
     "Unavailable: %@" : {
       "localizations" : {
         "fr" : {
@@ -417,6 +597,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version"
+          }
+        }
+      }
+    },
+    "Very low battery" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie très faible"
           }
         }
       }

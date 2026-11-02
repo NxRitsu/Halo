@@ -1,31 +1,46 @@
 import AppKit
 
-/// Last resort source for Apple Music and Spotify, used when MediaRemote is unavailable.
-///
-/// Both apps broadcast their state through distributed notifications, which need no permission.
-/// Commands are sent with AppleScript, which asks the user for Automation permission once.
-/// Artwork and other players (browsers…) are not supported.
-@MainActor
-final class ScriptingNowPlayingSource: NowPlayingSource {
-    private enum Player: String, CaseIterable {
-        case music = "com.apple.Music"
-        case spotify = "com.spotify.client"
+/// Apps that can be controlled directly with AppleScript, whichever app macOS sends media commands to.
+/// This asks the user for Automation permission once.
+enum ScriptablePlayer: String, CaseIterable {
+    case music = "com.apple.Music"
+    case spotify = "com.spotify.client"
 
-        var notificationName: Notification.Name {
-            switch self {
-            case .music: Notification.Name("com.apple.Music.playerInfo")
-            case .spotify: Notification.Name("com.spotify.client.PlaybackStateChanged")
-            }
+    var notificationName: Notification.Name {
+        switch self {
+        case .music: Notification.Name("com.apple.Music.playerInfo")
+        case .spotify: Notification.Name("com.spotify.client.PlaybackStateChanged")
         }
     }
 
+    func send(_ command: MediaCommand) {
+        let statement = switch command {
+        case .play: "play"
+        case .pause: "pause"
+        case .togglePlayPause: "playpause"
+        case .nextTrack: "next track"
+        case .previousTrack: "previous track"
+        case .seek(let position): "set player position to \(position)"
+        }
+        let source = "tell application id \"\(rawValue)\" to \(statement)"
+        NSAppleScript(source: source)?.executeAndReturnError(nil)
+    }
+}
+
+/// Last resort source for Apple Music and Spotify, used when MediaRemote is unavailable.
+///
+/// Both apps broadcast their state through distributed notifications, which need no permission.
+/// Commands are sent with AppleScript.
+/// Artwork and other players (browsers…) are not supported.
+@MainActor
+final class ScriptingNowPlayingSource: NowPlayingSource {
     let method = NowPlayingMethod.scripting
     private var observers: [NSObjectProtocol] = []
-    private var activePlayer: Player?
+    private var activePlayer: ScriptablePlayer?
 
     func start(_ handler: @escaping @MainActor (NowPlayingEvent) -> Void) {
         let center = DistributedNotificationCenter.default()
-        for player in Player.allCases {
+        for player in ScriptablePlayer.allCases {
             let token = center.addObserver(forName: player.notificationName, object: nil, queue: .main) { [weak self] notification in
                 let info = notification.userInfo ?? [:]
                 let state = info["Player State"] as? String ?? ""
@@ -70,16 +85,6 @@ final class ScriptingNowPlayingSource: NowPlayingSource {
     }
 
     func send(_ command: MediaCommand) {
-        guard let player = activePlayer else { return }
-        let statement = switch command {
-        case .play: "play"
-        case .pause: "pause"
-        case .togglePlayPause: "playpause"
-        case .nextTrack: "next track"
-        case .previousTrack: "previous track"
-        case .seek(let position): "set player position to \(position)"
-        }
-        let source = "tell application id \"\(player.rawValue)\" to \(statement)"
-        NSAppleScript(source: source)?.executeAndReturnError(nil)
+        activePlayer?.send(command)
     }
 }
