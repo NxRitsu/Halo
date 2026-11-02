@@ -27,6 +27,7 @@ struct SettingsView: View {
 private struct GeneralSettingsView: View {
     @AppStorage(PreferenceKey.showMenuBarIcon) private var showMenuBarIcon = true
     @State private var launchAtLogin = LaunchAtLogin()
+    private let updates = AppServices.shared.updates
 
     var body: some View {
         Form {
@@ -54,6 +55,30 @@ private struct GeneralSettingsView: View {
                     .foregroundStyle(.secondary)
             }
             Section {
+                Toggle("Check for updates automatically", isOn: Binding(
+                    get: { updates.checksAutomatically },
+                    set: { updates.checksAutomatically = $0 }
+                ))
+                LabeledContent {
+                    Button("Check for Updates…") {
+                        updates.checkForUpdates()
+                    }
+                    .disabled(!updates.canCheck)
+                } label: {
+                    Text("Last check")
+                    if let lastCheck = updates.lastCheck {
+                        Text(lastCheck, format: .dateTime)
+                    } else {
+                        Text("Never")
+                    }
+                }
+            } footer: {
+                updatesFooter
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .disabled(updates.status != .ready)
+            Section {
                 LabeledContent("Version", value: "\(AppInfo.version) (\(AppInfo.build))")
                 HStack {
                     Link("Project on GitHub", destination: AppInfo.repositoryURL)
@@ -66,6 +91,18 @@ private struct GeneralSettingsView: View {
         }
         .formStyle(.grouped)
         .onAppear { launchAtLogin.refresh() }
+    }
+
+    @ViewBuilder
+    private var updatesFooter: some View {
+        switch updates.status {
+        case .disabledInDevelopment:
+            Text("Updates are turned off in development builds.")
+        case .ready:
+            Text("Update checks only contact GitHub, where \(AppInfo.name) is published.")
+        case .failed(let reason):
+            Text("Updates are unavailable: \(reason)")
+        }
     }
 }
 

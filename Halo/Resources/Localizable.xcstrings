@@ -131,6 +131,26 @@
         }
       }
     },
+    "Check for updates automatically" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher automatiquement les mises à jour"
+          }
+        }
+      }
+    },
+    "Check for Updates…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher les mises à jour…"
+          }
+        }
+      }
+    },
     "Clear" : {
       "localizations" : {
         "fr" : {
@@ -267,6 +287,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Île"
+          }
+        }
+      }
+    },
+    "Last check" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière recherche"
           }
         }
       }
@@ -647,6 +677,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Indisponible : %@"
+          }
+        }
+      }
+    },
+    "Update checks only contact GitHub, where %@ is published." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La recherche de mises à jour contacte uniquement GitHub, où %@ est publié."
+          }
+        }
+      }
+    },
+    "Updates are turned off in development builds." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mises à jour sont désactivées dans les versions de développement."
+          }
+        }
+      }
+    },
+    "Updates are unavailable: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mises à jour indisponibles : %@"
           }
         }
       }

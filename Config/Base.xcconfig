@@ -3,5 +3,8 @@
 CODE_SIGN_IDENTITY = -
 CODE_SIGN_STYLE = Manual
 DEVELOPMENT_TEAM =
+// Library validation would stop an ad hoc signed app from loading its embedded frameworks,
+// since they have no team ID. Turn this on along with a real signing identity.
+ENABLE_HARDENED_RUNTIME = NO
 
 #include? "../Local.xcconfig"

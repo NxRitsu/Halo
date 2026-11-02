@@ -10,6 +10,7 @@ final class AppServices {
     let battery = BatteryService()
     let menuBar = MenuBarSpaceMonitor()
     let activities: ActivityCoordinator
+    let updates = UpdateService()
 
     private init() {
         lyrics = LyricsService(nowPlaying: nowPlaying)
@@ -23,5 +24,6 @@ final class AppServices {
         battery.criticalThreshold = Preferences.criticalBatteryThreshold
         activities.showsLowBatteryIndicator = Preferences.lowBatteryIndicator
         activities.mediaWingsMode = Preferences.mediaWingsMode
+        updates.start()
     }
 }
