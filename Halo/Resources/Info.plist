@@ -39,6 +39,10 @@
 	<string>Halo detects when your AirPods or other Bluetooth audio devices connect, and shows their battery level. Nothing leaves your Mac.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>MIT License</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings.</string>
 	<key>SUFeedURL</key>
 	<string>https://github.com/NxRitsu/Halo/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>

@@ -32,6 +32,9 @@ enum VisualScenes {
         case "airpods":
             let event = BluetoothAudioEvent(kind: .connected, device: services.showSampleHeadphones())
             view = AnyView(BluetoothScene(island: services.island(metrics, expanded: false, content: IslandContent(alert: IslandAlert(event: .bluetooth(event), id: 1)))))
+        case "weather":
+            services.showSampleWeather()
+            view = AnyView(WeatherScene(island: services.island(metrics, expanded: true, content: IslandContent(expanded: .idle))))
         default:
             print("Unknown scene: \(name)")
             exit(1)
@@ -57,13 +60,14 @@ private final class SampleServices {
     let lyrics: LyricsService
     let battery = BatteryService()
     let bluetooth = BluetoothAudioService()
+    let weather = WeatherService()
 
     init() {
         lyrics = LyricsService(nowPlaying: nowPlaying)
     }
 
     func island(_ metrics: IslandMetrics, expanded: Bool, content: IslandContent) -> IslandModel {
-        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth)
+        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth, weather: weather)
         model.isExpanded = expanded
         return model
     }
@@ -98,6 +102,10 @@ private final class SampleServices {
         )
         bluetooth.showSample(device)
         return device
+    }
+
+    func showSampleWeather() {
+        weather.showSample(WeatherReport(temperature: 18.4, code: 2, isDay: true, minimum: 11.2, maximum: 21.6, fetchedAt: .now))
     }
 
     func setCharging() {
@@ -197,6 +205,25 @@ private struct BluetoothScene: View {
                 Text(verbatim: "Connected, at a glance.")
                     .font(.system(size: 42, weight: .bold, design: .rounded))
                 Text(verbatim: "Battery of each earbud and of the case, as soon as your headphones connect.")
+                    .font(.system(size: 19, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .padding(.bottom, 44)
+            }
+        }
+        .frame(width: 1200, height: 400)
+    }
+}
+
+private struct WeatherScene: View {
+    let island: IslandModel
+
+    var body: some View {
+        SceneBackdrop(island: island, scale: 1.6) {
+            VStack(spacing: 10) {
+                Spacer(minLength: 0)
+                Text(verbatim: "Nothing playing? The weather's there.")
+                    .font(.system(size: 42, weight: .bold, design: .rounded))
+                Text(verbatim: "Current temperature and the day's range, from your approximate location.")
                     .font(.system(size: 19, weight: .medium))
                     .foregroundStyle(.white.opacity(0.75))
                     .padding(.bottom, 44)

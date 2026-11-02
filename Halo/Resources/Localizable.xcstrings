@@ -91,6 +91,16 @@
         }
       }
     },
+    "Allow %@ under Privacy & Security → Location Services to show the weather." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez %@ dans Confidentialité et sécurité → Service de localisation pour afficher la météo."
+          }
+        }
+      }
+    },
     "Allowed" : {
       "localizations" : {
         "fr" : {
@@ -261,6 +271,16 @@
         }
       }
     },
+    "Clear sky" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciel dégagé"
+          }
+        }
+      }
+    },
     "Cleared" : {
       "localizations" : {
         "fr" : {
@@ -381,12 +401,52 @@
         }
       }
     },
+    "Drizzle" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruine"
+          }
+        }
+      }
+    },
     "Expand on hover" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agrandir au survol"
+          }
+        }
+      }
+    },
+    "Finding your location…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de votre position…"
+          }
+        }
+      }
+    },
+    "Fog" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brouillard"
+          }
+        }
+      }
+    },
+    "Freezing rain" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pluie verglaçante"
           }
         }
       }
@@ -417,6 +477,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
+          }
+        }
+      }
+    },
+    "Heavy rain" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forte pluie"
           }
         }
       }
@@ -491,6 +561,16 @@
         }
       }
     },
+    "License: CC BY 4.0" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licence : CC BY 4.0"
+          }
+        }
+      }
+    },
     "Listening mode (experimental)" : {
       "localizations" : {
         "fr" : {
@@ -501,12 +581,22 @@
         }
       }
     },
-    "Location" : {
+    "Location not found for now" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Localisation"
+            "value" : "Position introuvable pour le moment"
+          }
+        }
+      }
+    },
+    "Location Services are turned off" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le service de localisation est désactivé"
           }
         }
       }
@@ -791,6 +881,16 @@
         }
       }
     },
+    "Only your approximate location is sent to Open-Meteo, rounded to about 1 km. The last result is kept on this Mac, without the location." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seule votre position approximative est envoyée à Open-Meteo, arrondie à environ 1 km. Le dernier résultat reste sur ce Mac, sans la position."
+          }
+        }
+      }
+    },
     "Open App" : {
       "localizations" : {
         "fr" : {
@@ -811,6 +911,36 @@
         }
       }
     },
+    "Open-Meteo is unavailable, no new try before %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open-Meteo est indisponible, pas de nouvel essai avant %@"
+          }
+        }
+      }
+    },
+    "Overcast" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couvert"
+          }
+        }
+      }
+    },
+    "Partly cloudy" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partiellement nuageux"
+          }
+        }
+      }
+    },
     "Peak memory" : {
       "localizations" : {
         "fr" : {
@@ -827,16 +957,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autorisation requise"
-          }
-        }
-      }
-    },
-    "Planned for a later version" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prévu dans une prochaine version"
           }
         }
       }
@@ -877,6 +997,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "D"
+          }
+        }
+      }
+    },
+    "Rain" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pluie"
           }
         }
       }
@@ -1001,12 +1131,32 @@
         }
       }
     },
+    "Show the weather when nothing is playing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la météo quand rien n’est en lecture"
+          }
+        }
+      }
+    },
     "Show what's playing" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afficher la lecture en cours"
+          }
+        }
+      }
+    },
+    "Snow" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neige"
           }
         }
       }
@@ -1051,6 +1201,26 @@
         }
       }
     },
+    "System" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système"
+          }
+        }
+      }
+    },
+    "Temperature unit" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unité de température"
+          }
+        }
+      }
+    },
     "The report lists your Mac model, macOS version, displays, %@'s settings and the state of its services. It contains no track, file path or location. Nothing is sent: it is only copied to the clipboard." : {
       "localizations" : {
         "fr" : {
@@ -1067,6 +1237,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
+    "Thunderstorm" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orage"
           }
         }
       }
@@ -1091,6 +1271,16 @@
         }
       }
     },
+    "Turn them on under Privacy & Security to show the weather." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez-le dans Confidentialité et sécurité pour afficher la météo."
+          }
+        }
+      }
+    },
     "Turned off in development builds" : {
       "localizations" : {
         "fr" : {
@@ -1111,12 +1301,32 @@
         }
       }
     },
+    "Unknown" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inconnu"
+          }
+        }
+      }
+    },
     "Update checks only contact GitHub, where %@ is published." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "La recherche de mises à jour contacte uniquement GitHub, où %@ est publié."
+          }
+        }
+      }
+    },
+    "Updated at %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour à %@"
           }
         }
       }
@@ -1187,6 +1397,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volume %@"
+          }
+        }
+      }
+    },
+    "Weather" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Météo"
+          }
+        }
+      }
+    },
+    "Weather and location" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Météo et localisation"
+          }
+        }
+      }
+    },
+    "Weather data by Open-Meteo" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données météo fournies par Open-Meteo"
           }
         }
       }

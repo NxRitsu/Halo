@@ -31,10 +31,7 @@ enum DiagnosticsReport {
             menuBarStatus(services.menuBar),
             updatesStatus(services.updates),
             bluetoothStatus(services.bluetooth),
-            ServiceStatus(
-                title: "Location", detail: "Planned for a later version", level: .neutral,
-                reportName: "Location", reportValue: "not used by this version"
-            ),
+            weatherStatus(services.weather),
         ]
     }
 
@@ -127,6 +124,29 @@ enum DiagnosticsReport {
         }
     }
 
+    /// Reports the state of the service only: never a temperature, which would hint at a location.
+    private static func weatherStatus(_ weather: WeatherService) -> ServiceStatus {
+        let title: LocalizedStringResource = "Weather and location"
+        let name = "Weather and location"
+        switch weather.status {
+        case .disabled:
+            return ServiceStatus(title: title, detail: "Disabled", level: .neutral, reportName: name, reportValue: "disabled")
+        case .starting:
+            return ServiceStatus(title: title, detail: "Starting…", level: .neutral, reportName: name, reportValue: "starting")
+        case .active:
+            return ServiceStatus(title: title, detail: "Working", level: .ok, reportName: name, reportValue: "working")
+        case .denied:
+            return ServiceStatus(title: title, detail: "Not allowed", level: .warning, reportName: name, reportValue: "permission denied")
+        case .locationOff:
+            return ServiceStatus(title: title, detail: "Location Services are turned off", level: .warning, reportName: name, reportValue: "Location Services turned off")
+        case .locationNotFound:
+            return ServiceStatus(title: title, detail: "Location not found for now", level: .warning, reportName: name, reportValue: "location not found")
+        case .unavailable(let retryAt):
+            let time = retryAt.formatted(date: .omitted, time: .shortened)
+            return ServiceStatus(title: title, detail: "Open-Meteo is unavailable, no new try before \(time)", level: .warning, reportName: name, reportValue: "Open-Meteo unavailable, backing off")
+        }
+    }
+
     private static func batteryStatus(_ battery: BatteryService) -> ServiceStatus {
         guard let state = battery.state else {
             return ServiceStatus(title: "Battery", detail: "No battery", level: .neutral, reportName: "Battery", reportValue: "none")
@@ -175,6 +195,8 @@ enum DiagnosticsReport {
             ("Low battery alerts", onOff(Preferences.lowBatteryAlertsEnabled)),
             ("Bluetooth audio alerts", onOff(Preferences.bluetoothAudioEnabled)),
             ("Bluetooth disconnection alerts", onOff(Preferences.bluetoothDisconnectAlertsEnabled)),
+            ("Weather", onOff(Preferences.weatherEnabled)),
+            ("Temperature unit", Preferences.temperatureUnit.rawValue),
         ]
     }
 

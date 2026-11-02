@@ -20,6 +20,8 @@ enum PreferenceKey {
     static let accessibilityPromptedBuild = "accessibilityPromptedBuild"
     static let bluetoothAudioEnabled = "bluetoothAudioEnabled"
     static let bluetoothDisconnectAlertsEnabled = "bluetoothDisconnectAlertsEnabled"
+    static let weatherEnabled = "weatherEnabled"
+    static let temperatureUnit = "temperatureUnit"
 }
 
 /// Which displays show an island.
@@ -62,6 +64,8 @@ enum Preferences {
             PreferenceKey.lowBatteryIndicator: true,
             PreferenceKey.bluetoothAudioEnabled: true,
             PreferenceKey.bluetoothDisconnectAlertsEnabled: true,
+            PreferenceKey.weatherEnabled: true,
+            PreferenceKey.temperatureUnit: TemperatureUnit.system.rawValue,
         ]
     }
 
@@ -123,5 +127,13 @@ enum Preferences {
 
     static var bluetoothDisconnectAlertsEnabled: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.bluetoothDisconnectAlertsEnabled)
+    }
+
+    static var weatherEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.weatherEnabled)
+    }
+
+    static var temperatureUnit: TemperatureUnit {
+        TemperatureUnit(rawValue: UserDefaults.standard.string(forKey: PreferenceKey.temperatureUnit) ?? "") ?? .system
     }
 }

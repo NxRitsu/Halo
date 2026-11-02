@@ -54,6 +54,42 @@
           }
         }
       }
+    },
+    "NSLocationUsageDescription" : {
+      "comment" : "Privacy - Location Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo affiche la météo à partir de votre position approximative. Seules des coordonnées arrondies sont envoyées au service météo, et vous pouvez désactiver cela dans les réglages."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Privacy - Location When In Use Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo affiche la météo à partir de votre position approximative. Seules des coordonnées arrondies sont envoyées au service météo, et vous pouvez désactiver cela dans les réglages."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

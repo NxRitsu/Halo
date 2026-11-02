@@ -13,6 +13,7 @@ and services used by Halo, with their licenses or terms.
 
 | Service | Used for | Terms |
 | --- | --- | --- |
+| [Open-Meteo](https://open-meteo.com) | Weather. Only coordinates rounded to about 1 km are sent; the last result is cached on disk and requests back off when the service is unavailable. | Free API for non-commercial use, under 10,000 calls per day. Data under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), credited with a link wherever it is shown. |
 | [LRCLIB](https://lrclib.net) | Synced lyrics. Only the track title, artist, album and duration are sent; results are cached on disk and requests back off when the service is unavailable. | Free API for non-commercial use, see [lrclib.net](https://lrclib.net). |
 | [GitHub](https://github.com) | Hosts the update feed and the downloads that Sparkle fetches. | [GitHub terms](https://docs.github.com/site-policy/github-terms/github-terms-of-service). |
 

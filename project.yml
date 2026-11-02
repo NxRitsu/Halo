@@ -64,6 +64,8 @@ targets:
       properties:
         # Only used by the Music and Spotify fallback, when MediaRemote is unavailable.
         com.apple.security.automation.apple-events: true
+        # Only matters with the hardened runtime, which Developer ID builds use.
+        com.apple.security.personal-information.location: true
     info:
       path: Halo/Resources/Info.plist
       properties:
@@ -77,6 +79,8 @@ targets:
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         LSUIElement: true
         NSHumanReadableCopyright: "MIT License"
+        NSLocationUsageDescription: "Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings."
+        NSLocationWhenInUseUsageDescription: "Halo shows the weather using your approximate location. Only rounded coordinates are sent to the weather service, and you can turn this off in the settings."
         NSBluetoothAlwaysUsageDescription: "Halo detects when your AirPods or other Bluetooth audio devices connect, and shows their battery level. Nothing leaves your Mac."
         NSAppleEventsUsageDescription: "Halo controls playback in Music and Spotify when the system's now playing information is unavailable."
         NSAccessibilityUsageDescription: "Halo reads the position of menu bar items to avoid covering them. This is only used if you choose to show playback when there's room."

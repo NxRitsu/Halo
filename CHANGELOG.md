@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Weather in the expanded island when nothing is playing: current temperature, conditions and the
+  day's minimum and maximum, from Open-Meteo and your approximate location. It refreshes when the
+  Mac wakes, when it moves far enough, and when the weather comes on screen, at most every 30 minutes
+  otherwise.
+- A Weather settings tab, and the state of the weather and location in Diagnostics.
+
 ## [0.2.1] - 2026-11-02
 
 ### Changed

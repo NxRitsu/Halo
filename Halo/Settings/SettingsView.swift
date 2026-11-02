@@ -18,6 +18,9 @@ struct SettingsView: View {
             Tab("Devices", systemImage: "laptopcomputer") {
                 DevicesSettingsView()
             }
+            Tab("Weather", systemImage: "cloud.sun") {
+                WeatherSettingsView()
+            }
             Tab("Diagnostics", systemImage: "stethoscope") {
                 DiagnosticsSettingsView()
             }
@@ -383,6 +386,100 @@ private struct DevicesSettingsView: View {
         case .active:
             if bluetooth.devices.isEmpty {
                 LabeledContent("Status") { Text("No audio device connected") }
+            }
+        }
+    }
+}
+
+private struct WeatherSettingsView: View {
+    @AppStorage(PreferenceKey.weatherEnabled) private var weatherEnabled = true
+    @AppStorage(PreferenceKey.temperatureUnit) private var unit = TemperatureUnit.system
+    private let weather = AppServices.shared.weather
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Show the weather when nothing is playing", isOn: $weatherEnabled)
+                statusRow
+                if let report = weather.report(at: .now) {
+                    LabeledContent {
+                        Label {
+                            Text(verbatim: unit.text(celsius: report.temperature))
+                                .monospacedDigit()
+                        } icon: {
+                            Image(systemName: report.symbol)
+                                .symbolRenderingMode(.multicolor)
+                        }
+                    } label: {
+                        Text(report.condition.title)
+                        Text("Updated at \(report.fetchedAt.formatted(date: .omitted, time: .shortened))")
+                    }
+                }
+            } footer: {
+                Text("Only your approximate location is sent to Open-Meteo, rounded to about 1 km. The last result is kept on this Mac, without the location.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section {
+                Picker("Temperature unit", selection: $unit) {
+                    Text("System").tag(TemperatureUnit.system)
+                    Text(verbatim: "°C").tag(TemperatureUnit.celsius)
+                    Text(verbatim: "°F").tag(TemperatureUnit.fahrenheit)
+                }
+                .disabled(!weatherEnabled)
+            }
+            Section {
+                Link("Weather data by Open-Meteo", destination: OpenMeteoClient.websiteURL)
+                Link("License: CC BY 4.0", destination: OpenMeteoClient.licenseURL)
+            }
+        }
+        .formStyle(.grouped)
+        .onChange(of: weatherEnabled) { _, enabled in
+            weather.setEnabled(enabled)
+        }
+    }
+
+    @ViewBuilder
+    private var statusRow: some View {
+        switch weather.status {
+        case .disabled:
+            EmptyView()
+        case .starting:
+            LabeledContent("Status") { Text("Finding your location…") }
+        case .active:
+            LabeledContent("Status") {
+                Label("Working", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            }
+        case .denied:
+            LabeledContent {
+                Button("Open System Settings") {
+                    weather.openPrivacySettings()
+                }
+            } label: {
+                Label("Permission required", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                Text("Allow \(AppInfo.name) under Privacy & Security → Location Services to show the weather.")
+            }
+        case .locationOff:
+            LabeledContent {
+                Button("Open System Settings") {
+                    weather.openPrivacySettings()
+                }
+            } label: {
+                Label("Location Services are turned off", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                Text("Turn them on under Privacy & Security to show the weather.")
+            }
+        case .locationNotFound:
+            LabeledContent("Status") {
+                Label("Location not found for now", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+            }
+        case .unavailable(let retryAt):
+            LabeledContent("Status") {
+                Label("Open-Meteo is unavailable, no new try before \(retryAt.formatted(date: .omitted, time: .shortened))", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
             }
         }
     }

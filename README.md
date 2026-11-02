@@ -29,7 +29,7 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 | ✅ | Synced lyrics, cached on your Mac |
 | ✅ | Battery and charging alerts |
 | ✅ | AirPods and Bluetooth audio alerts with battery levels, volume and listening mode |
-| 🚧 | Weather |
+| ✅ | Weather |
 | 🚧 | File tray (drag and drop, Quick Look, AirDrop) |
 | 🚧 | Audio output picker |
 
@@ -72,7 +72,7 @@ leave your Mac, and all of them can be disabled:
 | Request | Data sent | Why |
 | --- | --- | --- |
 | Lyrics ([LRCLIB](https://lrclib.net)) | Track title, artist, album, duration | To fetch synced lyrics |
-| Weather ([Open-Meteo](https://open-meteo.com)) | Approximate location (reduced accuracy) | To show the current weather |
+| Weather ([Open-Meteo](https://open-meteo.com)) | Approximate location (reduced accuracy, coordinates rounded to about 1 km) | To show the current weather |
 | Updates ([GitHub](https://github.com/NxRitsu/Halo/releases)) | Nothing but the request itself, which reveals your IP address to GitHub, like any download | To find and download new versions |
 
 Everything else (media info, battery, Bluetooth, files) stays on your Mac.
@@ -80,6 +80,10 @@ Everything else (media info, battery, Bluetooth, files) stays on your Mac.
 Halo only asks for the Accessibility permission if you choose to show playback around the notch
 "when there's room". It then reads the position of menu bar items, not their titles or anything
 else, so the island doesn't cover them.
+
+Halo asks for the Bluetooth permission to detect your audio devices, and for the location permission
+to show the weather. Your location is never saved or logged. Turning the weather off in the settings
+stops both the location and the requests, and deletes the last saved result.
 
 ## Building from source
 

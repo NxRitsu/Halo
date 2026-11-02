@@ -111,5 +111,6 @@ final class IslandManager {
         for (id, controller) in controllers {
             controller.setHidden(fullScreenIDs.contains(id))
         }
+        AppServices.shared.weather.islandIsVisible = controllers.keys.contains { !fullScreenIDs.contains($0) }
     }
 }

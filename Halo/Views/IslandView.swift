@@ -39,7 +39,7 @@ struct IslandView: View {
                         lyrics: model.content.showsLyrics ? model.lyrics.lyrics : nil
                     )
                 case .idle:
-                    ClockView()
+                    ClockWeatherView(weather: model.weather)
                 }
             }
             .padding(.top, model.metrics.base.height + 8)
@@ -74,25 +74,6 @@ struct IslandView: View {
             BatteryAlertView(event: event, battery: model.battery)
         case .bluetooth(let event):
             BluetoothAlertView(event: event, bluetooth: model.bluetooth)
-        }
-    }
-}
-
-/// Expanded content when nothing else is going on.
-private struct ClockView: View {
-    var body: some View {
-        TimelineView(.everyMinute) { context in
-            HStack(alignment: .firstTextBaseline) {
-                Text(context.date, format: .dateTime.hour().minute())
-                    .font(.system(size: 34, weight: .semibold, design: .rounded))
-                    .monospacedDigit()
-                Spacer()
-                Text(context.date, format: .dateTime.weekday(.wide).day().month(.wide))
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
-            .foregroundStyle(.white)
-            .frame(maxHeight: .infinity)
         }
     }
 }
