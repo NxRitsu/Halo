@@ -74,6 +74,8 @@ private struct IslandSettingsView: View {
     @AppStorage(PreferenceKey.expandOnHover) private var expandOnHover = true
     @AppStorage(PreferenceKey.hoverDelay) private var hoverDelay = 0.15
     @AppStorage(PreferenceKey.hideInFullScreen) private var hideInFullScreen = true
+    @AppStorage(PreferenceKey.mediaWingsEnabled) private var mediaWingsEnabled = true
+    private let activities = AppServices.shared.activities
 
     var body: some View {
         Form {
@@ -102,8 +104,18 @@ private struct IslandSettingsView: View {
                 }
                 .disabled(!expandOnHover)
             }
+            Section {
+                Toggle("Show playback around the notch", isOn: $mediaWingsEnabled)
+            } footer: {
+                Text("Turn this off if the island hides menus in the menu bar. The player stays available by expanding the island.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
+        .onChange(of: mediaWingsEnabled) { _, shows in
+            activities.showsMediaWings = shows
+        }
     }
 }
 

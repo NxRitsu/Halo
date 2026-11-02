@@ -21,5 +21,6 @@ final class AppServices {
         battery.lowThreshold = Preferences.lowBatteryThreshold
         battery.criticalThreshold = Preferences.criticalBatteryThreshold
         activities.showsLowBatteryIndicator = Preferences.lowBatteryIndicator
+        activities.showsMediaWings = Preferences.mediaWingsEnabled
     }
 }

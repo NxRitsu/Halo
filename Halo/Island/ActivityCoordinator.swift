@@ -39,6 +39,9 @@ final class ActivityCoordinator {
     private(set) var content = IslandContent()
     /// Whether the compact island shows the charge when the battery is low.
     var showsLowBatteryIndicator = true
+    /// Whether the compact island shows the artwork and equalizer around the notch while media
+    /// plays. When off, the media stays reachable by expanding the island.
+    var showsMediaWings = true
 
     @ObservationIgnored private let nowPlaying: NowPlayingService
     @ObservationIgnored private let lyrics: LyricsService
@@ -86,7 +89,13 @@ final class ActivityCoordinator {
             content.compactShowsBattery = showsBattery
         }
 
-        if isPlaying {
+        if !showsMediaWings {
+            pendingMediaHide?.cancel()
+            pendingMediaHide = nil
+            if content.compactShowsMedia {
+                content.compactShowsMedia = false
+            }
+        } else if isPlaying {
             pendingMediaHide?.cancel()
             pendingMediaHide = nil
             if !content.compactShowsMedia {

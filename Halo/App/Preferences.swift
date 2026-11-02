@@ -9,6 +9,7 @@ enum PreferenceKey {
     static let hoverDelay = "hoverDelay"
     static let hideInFullScreen = "hideInFullScreen"
     static let nowPlayingEnabled = "nowPlayingEnabled"
+    static let mediaWingsEnabled = "mediaWingsEnabled"
     static let lyricsEnabled = "lyricsEnabled"
     static let powerAlertsEnabled = "powerAlertsEnabled"
     static let lowBatteryAlertsEnabled = "lowBatteryAlertsEnabled"
@@ -38,6 +39,7 @@ enum Preferences {
             PreferenceKey.hoverDelay: 0.15,
             PreferenceKey.hideInFullScreen: true,
             PreferenceKey.nowPlayingEnabled: true,
+            PreferenceKey.mediaWingsEnabled: true,
             PreferenceKey.lyricsEnabled: true,
             PreferenceKey.powerAlertsEnabled: true,
             PreferenceKey.lowBatteryAlertsEnabled: true,
@@ -69,6 +71,10 @@ enum Preferences {
 
     static var nowPlayingEnabled: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.nowPlayingEnabled)
+    }
+
+    static var mediaWingsEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.mediaWingsEnabled)
     }
 
     static var lyricsEnabled: Bool {

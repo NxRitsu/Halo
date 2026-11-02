@@ -501,6 +501,16 @@
         }
       }
     },
+    "Show playback around the notch" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la lecture autour de l’encoche"
+          }
+        }
+      }
+    },
     "Show synced lyrics" : {
       "localizations" : {
         "fr" : {
@@ -577,6 +587,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
+    "Turn this off if the island hides menus in the menu bar. The player stays available by expanding the island." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivez cette option si l’île cache des menus dans la barre des menus. Le lecteur reste accessible en agrandissant l’île."
           }
         }
       }

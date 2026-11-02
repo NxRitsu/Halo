@@ -51,7 +51,8 @@ struct IslandMetrics: Equatable {
     }
 
     /// Width of each side area of the compact island, left and right of the notch.
-    var wingWidth: CGFloat { base.height + 12 }
+    /// Kept as narrow as its content allows, because the wings cover the menu bar.
+    var wingWidth: CGFloat { base.height }
 
     private var expandedWidth: CGFloat { max(base.width + 220, 440) }
 
