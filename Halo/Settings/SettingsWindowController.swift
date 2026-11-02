@@ -6,10 +6,14 @@ import SwiftUI
 /// The SwiftUI `Settings` scene cannot be opened reliably from an agent app (no Dock icon,
 /// no app menu), so the window is managed here and opened from the island or the menu bar.
 @MainActor
+@Observable
 final class SettingsWindowController {
     static let shared = SettingsWindowController()
 
-    private var window: NSWindow?
+    /// Whether any part of the window can be seen. False once it is closed, minimized or covered.
+    private(set) var isWindowVisible = false
+
+    @ObservationIgnored private var window: NSWindow?
 
     func show() {
         let window = self.window ?? makeWindow()
@@ -24,6 +28,13 @@ final class SettingsWindowController {
         window.styleMask = [.titled, .closable, .miniaturizable]
         window.isReleasedWhenClosed = false
         window.center()
+        NotificationCenter.default.addObserver(
+            forName: NSWindow.didChangeOcclusionStateNotification, object: window, queue: .main
+        ) { [weak self, weak window] _ in
+            MainActor.assumeIsolated {
+                self?.isWindowVisible = window?.occlusionState.contains(.visible) ?? false
+            }
+        }
         return window
     }
 }

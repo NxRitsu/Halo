@@ -114,6 +114,10 @@ final class HelperProcessMediaRemoteSource: NowPlayingSource {
     private var buffer = Data()
     private var handler: (@MainActor (NowPlayingEvent) -> Void)?
 
+    var processIdentifier: pid_t? {
+        process?.processIdentifier
+    }
+
     func start(_ handler: @escaping @MainActor (NowPlayingEvent) -> Void) {
         self.handler = handler
         guard let libraryURL = MediaRemoteHelper.libraryURL, let scriptURL = MediaRemoteHelper.scriptURL else {

@@ -69,6 +69,11 @@ final class NowPlayingService {
     @ObservationIgnored private var restartAttempts = 0
     @ObservationIgnored private var restartTask: Task<Void, Never>?
 
+    /// The process reading MediaRemote, when it is the source in use.
+    var helperProcessIdentifier: pid_t? {
+        (source as? HelperProcessMediaRemoteSource)?.processIdentifier
+    }
+
     // MARK: - Lifecycle
 
     func setEnabled(_ enabled: Bool) {

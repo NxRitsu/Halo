@@ -18,6 +18,9 @@ struct SettingsView: View {
             Tab("Devices", systemImage: "laptopcomputer") {
                 DevicesSettingsView()
             }
+            Tab("Diagnostics", systemImage: "stethoscope") {
+                DiagnosticsSettingsView()
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .frame(width: 520, height: 360)

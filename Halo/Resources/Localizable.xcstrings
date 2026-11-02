@@ -71,6 +71,16 @@
         }
       }
     },
+    "Allowed" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisé"
+          }
+        }
+      }
+    },
     "Always" : {
       "localizations" : {
         "fr" : {
@@ -87,6 +97,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Batterie"
+          }
+        }
+      }
+    },
+    "Bluetooth" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bluetooth"
           }
         }
       }
@@ -181,6 +201,36 @@
         }
       }
     },
+    "Copied" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        }
+      }
+    },
+    "Copy report" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le rapport"
+          }
+        }
+      }
+    },
+    "CPU" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        }
+      }
+    },
     "Current track" : {
       "localizations" : {
         "fr" : {
@@ -191,12 +241,32 @@
         }
       }
     },
+    "Detected" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détectée"
+          }
+        }
+      }
+    },
     "Devices" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appareils"
+          }
+        }
+      }
+    },
+    "Diagnostics" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnostics"
           }
         }
       }
@@ -311,6 +381,16 @@
         }
       }
     },
+    "Location" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localisation"
+          }
+        }
+      }
+    },
     "Low battery" : {
       "localizations" : {
         "fr" : {
@@ -381,12 +461,42 @@
         }
       }
     },
+    "Measured only while this tab is open. 100 % is one processor core." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesuré uniquement quand cet onglet est ouvert. 100 % correspond à un cœur de processeur."
+          }
+        }
+      }
+    },
+    "Measuring…" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesure…"
+          }
+        }
+      }
+    },
     "Media" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média"
+          }
+        }
+      }
+    },
+    "Media helper" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Processus média"
           }
         }
       }
@@ -411,6 +521,26 @@
         }
       }
     },
+    "Memory" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mémoire"
+          }
+        }
+      }
+    },
+    "Menu bar access" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accès à la barre des menus"
+          }
+        }
+      }
+    },
     "Music and Spotify only" : {
       "localizations" : {
         "fr" : {
@@ -431,6 +561,16 @@
         }
       }
     },
+    "No battery" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune batterie"
+          }
+        }
+      }
+    },
     "No synced lyrics for this track" : {
       "localizations" : {
         "fr" : {
@@ -441,12 +581,32 @@
         }
       }
     },
+    "Not allowed" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non autorisé"
+          }
+        }
+      }
+    },
     "Nothing playing" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucune lecture en cours"
+          }
+        }
+      }
+    },
+    "Now playing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture en cours"
           }
         }
       }
@@ -491,12 +651,32 @@
         }
       }
     },
+    "Peak memory" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pic de mémoire"
+          }
+        }
+      }
+    },
     "Permission required" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autorisation requise"
+          }
+        }
+      }
+    },
+    "Planned for a later version" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévu dans une prochaine version"
           }
         }
       }
@@ -531,6 +711,16 @@
         }
       }
     },
+    "Report" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rapport"
+          }
+        }
+      }
+    },
     "s" : {
       "localizations" : {
         "fr" : {
@@ -557,6 +747,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recherche…"
+          }
+        }
+      }
+    },
+    "Services" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Services"
           }
         }
       }
@@ -661,12 +861,32 @@
         }
       }
     },
+    "The report lists your Mac model, macOS version, displays, %@'s settings and the state of its services. It contains no track, file path or location. Nothing is sent: it is only copied to the clipboard." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rapport indique le modèle de votre Mac, la version de macOS, vos écrans, les réglages de %@ et l’état de ses services. Il ne contient ni morceau, ni chemin de fichier, ni position. Rien n’est envoyé : il est seulement copié dans le presse-papiers."
+          }
+        }
+      }
+    },
     "This Mac has no battery." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
+    "Turned off in development builds" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivées dans les versions de développement"
           }
         }
       }
@@ -691,6 +911,16 @@
         }
       }
     },
+    "Updates" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mises à jour"
+          }
+        }
+      }
+    },
     "Updates are turned off in development builds." : {
       "localizations" : {
         "fr" : {
@@ -707,6 +937,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mises à jour indisponibles : %@"
+          }
+        }
+      }
+    },
+    "Usage" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation"
           }
         }
       }
@@ -737,6 +977,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quand il y a la place"
+          }
+        }
+      }
+    },
+    "Working" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonctionnelles"
           }
         }
       }

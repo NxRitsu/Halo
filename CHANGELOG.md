@@ -31,5 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App icon.
 - Software updates with Sparkle, with an option in the General settings. Debug builds don't update
   themselves.
+- Diagnostics settings tab: live CPU and memory usage, measured only while the tab is open, the
+  state of each service, and a report to copy into bug reports. It contains no personal data and
+  is never sent anywhere.
 - Release workflow: a version tag publishes a `.dmg`, a `.zip` and an update feed on GitHub. Builds
   are signed ad hoc, and Developer ID signing with notarization turns on when its secrets exist.
