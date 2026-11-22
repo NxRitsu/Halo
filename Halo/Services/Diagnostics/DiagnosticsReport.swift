@@ -33,6 +33,7 @@ enum DiagnosticsReport {
             bluetoothStatus(services.bluetooth),
             weatherStatus(services.weather),
             airDropStatus(services.airDrop),
+            lockScreenStatus(services.lockScreen),
         ]
     }
 
@@ -194,6 +195,19 @@ enum DiagnosticsReport {
         return ServiceStatus(title: title, detail: "Not available on this Mac", level: .warning, reportName: name, reportValue: "unavailable")
     }
 
+    private static func lockScreenStatus(_ lockScreen: LockScreenService) -> ServiceStatus {
+        let title: LocalizedStringResource = "Lock screen"
+        let name = "Lock screen widgets"
+        switch lockScreen.status {
+        case .disabled:
+            return ServiceStatus(title: title, detail: "Disabled", level: .neutral, reportName: name, reportValue: "disabled")
+        case .ready:
+            return ServiceStatus(title: title, detail: "Ready", level: .ok, reportName: name, reportValue: "ready")
+        case .unavailable:
+            return ServiceStatus(title: title, detail: "Not allowed by this version of macOS", level: .failure, reportName: name, reportValue: "SkyLight unavailable")
+        }
+    }
+
     // MARK: - Report details
 
     private static var settings: [(name: String, value: String)] {
@@ -211,6 +225,8 @@ enum DiagnosticsReport {
             ("Weather", onOff(Preferences.weatherEnabled)),
             ("Temperature unit", Preferences.temperatureUnit.rawValue),
             ("AirDrop on drop", onOff(Preferences.airDropEnabled)),
+            ("Lock screen widgets", onOff(Preferences.lockScreenEnabled)),
+            ("Lock screen opacity", String(format: "%.0f %%", UserDefaults.standard.double(forKey: PreferenceKey.lockScreenOpacity) * 100)),
         ]
     }
 

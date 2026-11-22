@@ -161,6 +161,16 @@
         }
       }
     },
+    "Anyone near your Mac can read these widgets while it's locked. They disappear as soon as you unlock it." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toute personne près de votre Mac peut lire ces widgets tant qu’il est verrouillé. Ils disparaissent dès que vous le déverrouillez."
+          }
+        }
+      }
+    },
     "Audio device" : {
       "localizations" : {
         "fr" : {
@@ -171,12 +181,32 @@
         }
       }
     },
+    "Audio devices" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils audio"
+          }
+        }
+      }
+    },
     "Available" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disponible"
+          }
+        }
+      }
+    },
+    "Background opacity" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opacité du fond"
           }
         }
       }
@@ -661,6 +691,26 @@
         }
       }
     },
+    "Lock Screen" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran verrouillé"
+          }
+        }
+      }
+    },
+    "Lock screen" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran verrouillé"
+          }
+        }
+      }
+    },
     "Low battery" : {
       "localizations" : {
         "fr" : {
@@ -881,6 +931,16 @@
         }
       }
     },
+    "Not allowed by this version of macOS" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non autorisé par cette version de macOS"
+          }
+        }
+      }
+    },
     "Not available on this Mac" : {
       "localizations" : {
         "fr" : {
@@ -1081,6 +1141,16 @@
         }
       }
     },
+    "Ready" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêts"
+          }
+        }
+      }
+    },
     "Reopen %@" : {
       "localizations" : {
         "fr" : {
@@ -1231,6 +1301,16 @@
         }
       }
     },
+    "Show widgets on the lock screen" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher des widgets sur l’écran verrouillé"
+          }
+        }
+      }
+    },
     "Snow" : {
       "localizations" : {
         "fr" : {
@@ -1267,6 +1347,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "État"
+          }
+        }
+      }
+    },
+    "Synced lyrics" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paroles synchronisées"
           }
         }
       }
@@ -1327,6 +1417,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ce Mac n’a pas de batterie."
+          }
+        }
+      }
+    },
+    "This version of macOS doesn't allow drawing on the lock screen." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette version de macOS ne permet pas d’afficher quoi que ce soit sur l’écran verrouillé."
           }
         }
       }
@@ -1521,12 +1621,32 @@
         }
       }
     },
+    "What's playing" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture en cours"
+          }
+        }
+      }
+    },
     "When there's room" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quand il y a la place"
+          }
+        }
+      }
+    },
+    "Widgets" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets"
           }
         }
       }

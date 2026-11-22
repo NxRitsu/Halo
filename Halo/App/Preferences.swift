@@ -23,6 +23,14 @@ enum PreferenceKey {
     static let weatherEnabled = "weatherEnabled"
     static let temperatureUnit = "temperatureUnit"
     static let airDropEnabled = "airDropEnabled"
+    static let lockScreenEnabled = "lockScreenEnabled"
+    static let lockScreenNowPlaying = "lockScreenNowPlaying"
+    static let lockScreenLyrics = "lockScreenLyrics"
+    static let lockScreenWeather = "lockScreenWeather"
+    static let lockScreenBattery = "lockScreenBattery"
+    static let lockScreenAudioDevices = "lockScreenAudioDevices"
+    /// From 0 (clear glass) to 1 (dark glass).
+    static let lockScreenOpacity = "lockScreenOpacity"
 }
 
 /// Which displays show an island.
@@ -68,6 +76,13 @@ enum Preferences {
             PreferenceKey.weatherEnabled: true,
             PreferenceKey.temperatureUnit: TemperatureUnit.system.rawValue,
             PreferenceKey.airDropEnabled: true,
+            PreferenceKey.lockScreenEnabled: true,
+            PreferenceKey.lockScreenNowPlaying: true,
+            PreferenceKey.lockScreenLyrics: true,
+            PreferenceKey.lockScreenWeather: true,
+            PreferenceKey.lockScreenBattery: true,
+            PreferenceKey.lockScreenAudioDevices: true,
+            PreferenceKey.lockScreenOpacity: 0.25,
         ]
     }
 
@@ -141,5 +156,9 @@ enum Preferences {
 
     static var airDropEnabled: Bool {
         UserDefaults.standard.bool(forKey: PreferenceKey.airDropEnabled)
+    }
+
+    static var lockScreenEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.lockScreenEnabled)
     }
 }

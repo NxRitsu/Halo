@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Widgets on the lock screen: what's playing with its synced lyrics, the weather, the battery and
+  connected audio devices. They disappear as soon as the Mac unlocks. A Lock Screen settings tab
+  turns each widget on or off and sets the opacity of their background, from none to dark glass.
+  Drawing above the lock screen relies on a private API: if macOS refuses it, the widgets turn
+  themselves off and Settings says so.
+
 ## [0.3.0] - 2026-11-22
 
 ### Added

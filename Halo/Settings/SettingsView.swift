@@ -21,6 +21,9 @@ struct SettingsView: View {
             Tab("Weather", systemImage: "cloud.sun") {
                 WeatherSettingsView()
             }
+            Tab("Lock Screen", systemImage: "lock.display") {
+                LockScreenSettingsView()
+            }
             Tab("Diagnostics", systemImage: "stethoscope") {
                 DiagnosticsSettingsView()
             }
@@ -395,6 +398,54 @@ private struct DevicesSettingsView: View {
             if bluetooth.devices.isEmpty {
                 LabeledContent("Status") { Text("No audio device connected") }
             }
+        }
+    }
+}
+
+private struct LockScreenSettingsView: View {
+    @AppStorage(PreferenceKey.lockScreenEnabled) private var enabled = true
+    @AppStorage(PreferenceKey.lockScreenNowPlaying) private var nowPlaying = true
+    @AppStorage(PreferenceKey.lockScreenLyrics) private var lyrics = true
+    @AppStorage(PreferenceKey.lockScreenWeather) private var weather = true
+    @AppStorage(PreferenceKey.lockScreenBattery) private var battery = true
+    @AppStorage(PreferenceKey.lockScreenAudioDevices) private var audioDevices = true
+    @AppStorage(PreferenceKey.lockScreenOpacity) private var opacity = 0.25
+    private let lockScreen = AppServices.shared.lockScreen
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Show widgets on the lock screen", isOn: $enabled)
+                if lockScreen.status == .unavailable {
+                    Label("This version of macOS doesn't allow drawing on the lock screen.", systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                }
+            } footer: {
+                Text("Anyone near your Mac can read these widgets while it's locked. They disappear as soon as you unlock it.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section("Widgets") {
+                Toggle("What's playing", isOn: $nowPlaying)
+                Toggle("Synced lyrics", isOn: $lyrics)
+                    .disabled(!nowPlaying)
+                Toggle("Weather", isOn: $weather)
+                Toggle("Battery", isOn: $battery)
+                Toggle("Audio devices", isOn: $audioDevices)
+                LabeledContent("Background opacity") {
+                    HStack {
+                        Slider(value: $opacity, in: 0...1, step: 0.05)
+                        Text(opacity, format: .percent.precision(.fractionLength(0)))
+                            .monospacedDigit()
+                            .frame(width: 40, alignment: .trailing)
+                    }
+                }
+            }
+            .disabled(!enabled)
+        }
+        .formStyle(.grouped)
+        .onChange(of: enabled) { _, enabled in
+            lockScreen.setEnabled(enabled)
         }
     }
 }

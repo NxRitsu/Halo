@@ -2,14 +2,14 @@
 
 **A Dynamic Island for your Mac's notch.** Halo turns the area around the MacBook notch into a
 living, glanceable island: what's playing, synced lyrics, battery and AirPods alerts, weather,
-AirDrop by dropping files on the notch, and more. On Macs without a notch, or on external displays, Halo draws a virtual
+AirDrop by dropping files on the notch, and widgets on the lock screen. On Macs without a notch, or on external displays, Halo draws a virtual
 island at the top of the screen.
 
 Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-driven, ~0% CPU at rest.
 
 > 🇫🇷 **En bref :** Halo transforme la zone de l'encoche du MacBook en « île dynamique » :
 > lecture en cours, paroles synchronisées, alertes batterie et AirPods, météo, AirDrop en déposant
-> des fichiers sur l'encoche…
+> des fichiers sur l'encoche, et des widgets sur l'écran verrouillé.
 > Sur les Mac sans encoche et les écrans externes, une île virtuelle s'affiche en haut de l'écran.
 > Gratuit, open source, natif et léger. Interface en anglais et en français.
 
@@ -32,7 +32,7 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 | ✅ | AirPods and Bluetooth audio alerts with battery levels, volume and listening mode |
 | ✅ | Weather |
 | ✅ | AirDrop: drop files on the notch to send them |
-| 🚧 | Audio output picker |
+| ✅ | Lock screen widgets: what's playing with lyrics, weather, battery and AirPods |
 
 ## Requirements
 
@@ -85,6 +85,10 @@ Halo only asks for the Accessibility permission if you choose to show playback a
 "when there's room". It then reads the position of menu bar items, not their titles or anything
 else, so the island doesn't cover them.
 
+The lock screen widgets show what's playing, the weather, the battery and your AirPods while your
+Mac is locked, so anyone near it can read them. They disappear as soon as you unlock, and you can
+turn each of them off in **Settings → Lock Screen**.
+
 Halo asks for the Bluetooth permission to detect your audio devices, and for the location permission
 to show the weather. Your location is never saved or logged. Turning the weather off in the settings
 stops both the location and the requests, and deletes the last saved result.
@@ -110,7 +114,8 @@ Yes. Halo shows a virtual island centered at the top of the screen, and you can 
 on every display.
 
 **Why does Halo use private Apple APIs?**
-Some features (such as reading what's playing system-wide) have no public API. Each of these
+Some features (such as reading what's playing system-wide, or drawing on the lock screen) have no
+public API. Each of these
 features turns itself off cleanly, with an explanation in Settings, if the API is unavailable on
 your macOS version.
 
