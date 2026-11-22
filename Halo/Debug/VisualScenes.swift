@@ -10,6 +10,8 @@ import SwiftUI
 @MainActor
 enum VisualScenes {
     private static var window: NSWindow?
+    /// Monday, June 9, 9:41 AM: the time of the sample menu bar and lock screen.
+    private(set) static var fixedDate: Date?
 
     static func show(_ name: String) {
         guard let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) else {
@@ -17,6 +19,7 @@ enum VisualScenes {
             exit(1)
         }
         let metrics = IslandMetrics(screen: screen)
+        fixedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 9, hour: 9, minute: 41))
         let services = SampleServices()
         let view: AnyView
         switch name {
@@ -35,6 +38,12 @@ enum VisualScenes {
         case "weather":
             services.showSampleWeather()
             view = AnyView(WeatherScene(island: services.island(metrics, expanded: true, content: IslandContent(expanded: .idle))))
+        case "lockscreen":
+            services.playSampleTrack()
+            services.showSampleWeather()
+            services.setCharging()
+            _ = services.showSampleHeadphones()
+            view = AnyView(LockScreenScene(services: services))
         case "airdrop":
             let island = services.island(metrics, expanded: false, content: IslandContent())
             island.drop = .ready(fileCount: 3)
@@ -110,7 +119,7 @@ private final class SampleServices {
     func showSampleHeadphones() -> BluetoothAudioDevice {
         let device = BluetoothAudioDevice(
             id: "sample",
-            name: "AirPods Pro de Sample",
+            name: "Sample's AirPods Pro",
             symbol: "airpods.pro",
             battery: BluetoothBattery(left: 92, right: 18, chargingCase: 64),
             volume: 40,
@@ -147,19 +156,16 @@ private struct SampleArtwork: View {
 }
 
 // MARK: - Scenes
+//
+// Every scene shares the same backdrop and caption, at 1200 points wide: 675 high for the two
+// large ones, 400 for the others.
 
 private struct PlayerScene: View {
     let island: IslandModel
 
     var body: some View {
         SceneBackdrop(island: island, scale: 1.25) {
-            VStack(spacing: 12) {
-                Spacer(minLength: 0)
-                Text(verbatim: "Your notch, brought to life.")
-                    .font(.system(size: 52, weight: .bold, design: .rounded))
-                Text(verbatim: "What's playing and synced lyrics, right where you already look.")
-                    .font(.system(size: 21, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.75))
+            SceneCaption(title: "Your notch, brought to life.", subtitle: "What's playing and synced lyrics, right where you already look.", isLarge: true) {
                 HStack(spacing: 10) {
                     FeaturePill(text: "Free and open source")
                     FeaturePill(text: "Native Swift")
@@ -167,7 +173,6 @@ private struct PlayerScene: View {
                     FeaturePill(text: "No telemetry")
                 }
                 .padding(.top, 10)
-                .padding(.bottom, 44)
             }
         }
         .frame(width: 1200, height: 675)
@@ -179,15 +184,7 @@ private struct CompactScene: View {
 
     var body: some View {
         SceneBackdrop(island: island, scale: 2.4) {
-            VStack(spacing: 10) {
-                Spacer(minLength: 0)
-                Text(verbatim: "Always there. Never in the way.")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                Text(verbatim: "Artwork and a live equalizer around the notch, with a mode that keeps your menus clear.")
-                    .font(.system(size: 19, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .padding(.bottom, 44)
-            }
+            SceneCaption(title: "Always there. Never in the way.", subtitle: "Artwork and a live equalizer around the notch, with a mode that keeps your menus clear.")
         }
         .frame(width: 1200, height: 400)
     }
@@ -198,15 +195,7 @@ private struct BatteryScene: View {
 
     var body: some View {
         SceneBackdrop(island: island, scale: 1.9) {
-            VStack(spacing: 10) {
-                Spacer(minLength: 0)
-                Text(verbatim: "A glance, then it's gone.")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                Text(verbatim: "Charging and low battery alerts show for three seconds, then step aside.")
-                    .font(.system(size: 19, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .padding(.bottom, 44)
-            }
+            SceneCaption(title: "A glance, then it's gone.", subtitle: "Charging and low battery alerts show for three seconds, then step aside.")
         }
         .frame(width: 1200, height: 400)
     }
@@ -217,26 +206,7 @@ private struct BluetoothScene: View {
 
     var body: some View {
         SceneBackdrop(island: island, scale: 1.9) {
-            VStack(spacing: 10) {
-                Spacer(minLength: 0)
-                Text(verbatim: "Connected, at a glance.")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                Text(verbatim: "Battery of each earbud and of the case, as soon as your headphones connect.")
-                    .font(.system(size: 19, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .padding(.bottom, 44)
-            }
-        }
-        .frame(width: 1200, height: 400)
-    }
-}
-
-private struct AirDropScene: View {
-    let island: IslandModel
-
-    var body: some View {
-        SceneBackdrop(island: island, scale: 1.6) {
-            Spacer(minLength: 0)
+            SceneCaption(title: "Connected, at a glance.", subtitle: "Each earbud and the case, as soon as your AirPods connect.")
         }
         .frame(width: 1200, height: 400)
     }
@@ -247,17 +217,77 @@ private struct WeatherScene: View {
 
     var body: some View {
         SceneBackdrop(island: island, scale: 1.6) {
-            VStack(spacing: 10) {
-                Spacer(minLength: 0)
-                Text(verbatim: "Nothing playing? The weather's there.")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
-                Text(verbatim: "Current temperature and the day's range, from your approximate location.")
-                    .font(.system(size: 19, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .padding(.bottom, 44)
-            }
+            SceneCaption(title: "Nothing playing? The weather's there.", subtitle: "Current temperature and the day's range, from your approximate location.")
         }
         .frame(width: 1200, height: 400)
+    }
+}
+
+private struct AirDropScene: View {
+    let island: IslandModel
+
+    var body: some View {
+        SceneBackdrop(island: island, scale: 1.6) {
+            SceneCaption(title: "Drop it on the notch.", subtitle: "Drag files onto the island and send them with AirDrop, without digging through the Finder.")
+        }
+        .frame(width: 1200, height: 400)
+    }
+}
+
+/// The lock screen: the same wallpaper, the date and time macOS draws, and Halo's widgets.
+private struct LockScreenScene: View {
+    let services: SampleServices
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            Wallpaper()
+            VStack(spacing: 0) {
+                Text(verbatim: "Monday, June 9")
+                    .font(.system(size: 21, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+                Text(verbatim: "9:41")
+                    .font(.system(size: 92, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.92))
+                LockScreenWidgetsView(nowPlaying: services.nowPlaying, lyrics: services.lyrics, weather: services.weather, battery: services.battery, bluetooth: services.bluetooth)
+                    .scaleEffect(1.2, anchor: .top)
+                    .frame(height: 260, alignment: .top)
+                    .padding(.top, 6)
+            }
+            .padding(.top, 28)
+            SceneCaption(title: "Locked, still in the loop.", subtitle: "What's playing, lyrics, weather and battery on your lock screen. Gone when you unlock.")
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+        }
+        .frame(width: 1200, height: 675)
+        .clipped()
+    }
+}
+
+/// Title and subtitle at the bottom of a scene, with optional content below them.
+private struct SceneCaption<Accessory: View>: View {
+    let title: String
+    let subtitle: String
+    var isLarge = false
+    @ViewBuilder var accessory: Accessory
+
+    var body: some View {
+        VStack(spacing: isLarge ? 12 : 10) {
+            Spacer(minLength: 0)
+            Text(verbatim: title)
+                .font(.system(size: isLarge ? 52 : 42, weight: .bold, design: .rounded))
+            Text(verbatim: subtitle)
+                .font(.system(size: isLarge ? 21 : 19, weight: .medium))
+                .foregroundStyle(.white.opacity(0.75))
+            accessory
+        }
+        .padding(.bottom, 44)
+    }
+}
+
+extension SceneCaption where Accessory == EmptyView {
+    init(title: String, subtitle: String, isLarge: Bool = false) {
+        self.init(title: title, subtitle: subtitle, isLarge: isLarge) { EmptyView() }
     }
 }
 

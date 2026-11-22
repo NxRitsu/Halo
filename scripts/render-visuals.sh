@@ -1,7 +1,8 @@
 #!/bin/bash
 # Renders the images of the README into docs/images, from the real island views with sample content.
 #
-# Needs a Mac with a notch, and the Screen Recording permission for the terminal.
+# Needs a Mac with a notch, and the Screen Recording permission for the terminal: the glass of the
+# lock screen widgets is only drawn on screen, so the scenes can't be rendered offscreen.
 # Each scene shows on screen for a few seconds. Quit Halo first.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -15,7 +16,7 @@ xcodebuild build -project Halo.xcodeproj -scheme Halo -configuration Debug \
     -destination 'platform=macOS' -derivedDataPath "$DERIVED" -quiet
 
 mkdir -p "$OUTPUT"
-for scene in player compact battery; do
+for scene in player compact battery airpods weather airdrop lockscreen; do
     LOG=$(mktemp)
     HALO_VISUAL_SCENE=$scene "$APP" -AppleLanguages '(en)' -AppleLocale en_US > "$LOG" &
     PID=$!

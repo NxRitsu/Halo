@@ -1,38 +1,77 @@
+<div align="center">
+
+<img src="Halo/Resources/Assets.xcassets/AppIcon.appiconset/icon_256x256@1x.png" width="128" height="128" alt="Halo icon">
+
 # Halo
 
-**A Dynamic Island for your Mac's notch.** Halo turns the area around the MacBook notch into a
-living, glanceable island: what's playing, synced lyrics, battery and AirPods alerts, weather,
-AirDrop by dropping files on the notch, and widgets on the lock screen. On Macs without a notch, or on external displays, Halo draws a virtual
-island at the top of the screen.
+**Your notch, brought to life.**
 
-Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-driven, ~0% CPU at rest.
+What's playing, synced lyrics, AirPods, battery, weather, AirDrop and your lock screen,
+all around the MacBook notch. Free, open source and native.
 
-> 🇫🇷 **En bref :** Halo transforme la zone de l'encoche du MacBook en « île dynamique » :
-> lecture en cours, paroles synchronisées, alertes batterie et AirPods, météo, AirDrop en déposant
-> des fichiers sur l'encoche, et des widgets sur l'écran verrouillé.
-> Sur les Mac sans encoche et les écrans externes, une île virtuelle s'affiche en haut de l'écran.
-> Gratuit, open source, natif et léger. Interface en anglais et en français.
+[![Latest release](https://img.shields.io/github/v/release/NxRitsu/Halo?label=release&color=7b3fe4)](https://github.com/NxRitsu/Halo/releases/latest)
+[![macOS 26+](https://img.shields.io/badge/macOS-26%2B-black?logo=apple)](#requirements)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![CI](https://github.com/NxRitsu/Halo/actions/workflows/ci.yml/badge.svg)](https://github.com/NxRitsu/Halo/actions/workflows/ci.yml)
+
+**[⬇︎ Download Halo](https://github.com/NxRitsu/Halo/releases/latest)**
+
+</div>
 
 ![The expanded island with the player and synced lyrics](docs/images/player.png)
 
-![Artwork and equalizer around the notch](docs/images/compact.png)
+> 🇫🇷 **En bref :** Halo donne vie à l'encoche du MacBook : lecture en cours avec paroles
+> synchronisées, AirPods, batterie, météo, AirDrop en déposant des fichiers sur l'encoche, et des
+> widgets sur l'écran verrouillé. Gratuit, open source, natif et léger, sans télémétrie.
+> Interface en anglais et en français.
 
-![A charging alert below the notch](docs/images/battery.png)
+## Why Halo
 
-<sub>Rendered from Halo's real views, with a made-up track and a sample menu bar.</sub>
+- **Native and light.** Swift and SwiftUI, no Electron, no web view. Halo reacts to system events
+  instead of polling, and sits at about 0% CPU when nothing happens.
+- **Private by design.** No account, no analytics, no telemetry. The few requests Halo makes are
+  listed [below](#privacy), and each one can be turned off.
+- **Made for the notch.** The island hugs the notch to the pixel and blends into it at rest. On
+  Macs without a notch and on external displays, Halo draws a matching virtual island.
+- **Yours to shape.** Every feature can be turned off on its own, in English or in French.
 
 ## Features
 
-| Status | Feature |
+### Now playing, with synced lyrics
+
+Hover the notch to open the player: artwork, controls, a scrubbable progress bar and the lyrics,
+in time with the music. It works with Apple Music, Spotify, Deezer and players in your browser.
+While music plays, the artwork and a live equalizer sit on each side of the notch, and a mode keeps
+them out of the way whenever they would cover menu bar items.
+
+![Artwork and equalizer around the notch](docs/images/compact.png)
+
+### Alerts that step aside
+
+Plug in your charger, run low on battery or connect your AirPods: the island shows it for a few
+seconds, then goes back to what it was doing. AirPods show each earbud and the case.
+
+| | |
 | --- | --- |
-| ✅ | Island aligned with the notch, expands on hover or click, virtual island on other displays |
-| ✅ | Now Playing (Apple Music, Spotify, Deezer, browsers…) with playback controls |
-| ✅ | Synced lyrics, cached on your Mac |
-| ✅ | Battery and charging alerts |
-| ✅ | AirPods and Bluetooth audio alerts with battery levels, volume and listening mode |
-| ✅ | Weather |
-| ✅ | AirDrop: drop files on the notch to send them |
-| ✅ | Lock screen widgets: what's playing with lyrics, weather, battery and AirPods |
+| ![A charging alert below the notch](docs/images/battery.png) | ![AirPods battery levels below the notch](docs/images/airpods.png) |
+
+### Weather and AirDrop
+
+When nothing is playing, the island shows the time and the weather where you are. Drag files onto
+the notch and it turns into a drop zone that sends them with AirDrop.
+
+| | |
+| --- | --- |
+| ![The weather in the expanded island](docs/images/weather.png) | ![The island as an AirDrop drop zone](docs/images/airdrop.png) |
+
+### On your lock screen
+
+While your Mac is locked, Halo shows what's playing with its lyrics, the weather, the battery and
+your AirPods below the clock. Everything disappears as soon as you unlock.
+
+![Widgets on the lock screen](docs/images/lockscreen.png)
+
+<sub>Images rendered from Halo's real views, with a made-up track, sample data and a sample menu bar.</sub>
 
 ## Requirements
 
@@ -41,34 +80,25 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 
 ## Installation
 
-Download the latest `.dmg` from the [Releases](https://github.com/NxRitsu/Halo/releases) page and
-drag Halo to your Applications folder.
+1. Download the latest `.dmg` from the [Releases](https://github.com/NxRitsu/Halo/releases/latest)
+   page and drag Halo to your Applications folder.
+2. Open Halo once and dismiss the warning: its builds aren't notarized by Apple for now.
+3. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the
+   message about Halo, then confirm.
 
-Halo is free and open source, and its builds aren't notarized by Apple for now. The first time you
-open it, macOS refuses to launch it:
-
-1. Try to open Halo once, then dismiss the warning.
-2. Open **System Settings → Privacy & Security**.
-3. Scroll down and click **Open Anyway** next to the message about Halo, then confirm.
-
-Halo has no Dock icon. Right-click the island or use the menu bar icon to open its settings.
+Halo has no Dock icon and no window. Right-click the island, or use the menu bar icon, to open its
+settings.
 
 ### Updates
 
-Halo can update itself: on the second launch it asks whether to check for updates automatically,
-and you can change this or check by hand in **Settings → General**. Updates are verified with a
-signature before they are installed.
-
-Permissions such as Accessibility carry over to updates. If you installed a version older than
-0.2.1, macOS will ask for them once more after updating to it: turn Halo on in the system list, then
-use **Reopen Halo** in **Settings → Island**. If the option still doesn't work, remove Halo from the list in
-**System Settings → Privacy & Security → Accessibility** and add it back. macOS 27 renamed this
-section: the **Open System Settings** button in **Settings → Island** goes straight to it.
+Halo updates itself. On the second launch it asks whether to check for updates automatically, and
+you can change this or check by hand in **Settings → General**. Updates are verified with a
+signature before they are installed, and your permissions carry over.
 
 ## Privacy
 
 Halo has **no analytics, no telemetry and no account**. Only three kinds of network requests ever
-leave your Mac, and all of them can be disabled:
+leave your Mac, and all of them can be turned off:
 
 | Request | Data sent | Why |
 | --- | --- | --- |
@@ -76,22 +106,18 @@ leave your Mac, and all of them can be disabled:
 | Weather ([Open-Meteo](https://open-meteo.com)) | Approximate location (reduced accuracy, coordinates rounded to about 1 km) | To show the current weather |
 | Updates ([GitHub](https://github.com/NxRitsu/Halo/releases)) | Nothing but the request itself, which reveals your IP address to GitHub, like any download | To find and download new versions |
 
-Everything else (media info, battery, Bluetooth, files) stays on your Mac. Files you drop on the
-island go through AirDrop only, to the device you pick. Halo doesn't keep them: a file that only
-exists inside an app, such as a photo dragged from Photos, is saved temporarily and deleted once
-AirDrop is done.
+Everything else (media info, battery, Bluetooth, files) stays on your Mac.
 
-Halo only asks for the Accessibility permission if you choose to show playback around the notch
-"when there's room". It then reads the position of menu bar items, not their titles or anything
-else, so the island doesn't cover them.
-
-The lock screen widgets show what's playing, the weather, the battery and your AirPods while your
-Mac is locked, so anyone near it can read them. They disappear as soon as you unlock, and you can
-turn each of them off in **Settings → Lock Screen**.
-
-Halo asks for the Bluetooth permission to detect your audio devices, and for the location permission
-to show the weather. Your location is never saved or logged. Turning the weather off in the settings
-stops both the location and the requests, and deletes the last saved result.
+- **Permissions.** Halo asks for Bluetooth to detect your audio devices and for your location to
+  show the weather. It asks for Accessibility only if you choose to show playback around the notch
+  "when there's room", to read where menu bar items are, not what they say.
+- **Location.** Your location is never saved or logged. Turning the weather off stops both the
+  location and the requests, and deletes the last saved result.
+- **AirDrop.** Files you drop on the island go through AirDrop only, to the device you pick. A file
+  that only exists inside an app, such as a photo dragged from Photos, is saved temporarily and
+  deleted once AirDrop is done.
+- **Lock screen.** Anyone near your locked Mac can read its widgets. Turn any of them off in
+  **Settings → Lock Screen**.
 
 ## Building from source
 
@@ -105,7 +131,8 @@ open Halo.xcodeproj        # or: xcodebuild -scheme Halo -configuration Debug bu
 
 The `.xcodeproj` is generated from `project.yml` and is not committed. By default the app is signed
 ad hoc. To sign with your own identity, copy `Local.xcconfig.example` to `Local.xcconfig` and set
-your team ID. Debug builds don't update themselves.
+your team ID. Debug builds don't update themselves. `scripts/render-visuals.sh` renders the images
+of this page from the app's views.
 
 ## FAQ
 
@@ -114,17 +141,23 @@ Yes. Halo shows a virtual island centered at the top of the screen, and you can 
 on every display.
 
 **Why does Halo use private Apple APIs?**
-Some features (such as reading what's playing system-wide, or drawing on the lock screen) have no
-public API. Each of these
-features turns itself off cleanly, with an explanation in Settings, if the API is unavailable on
-your macOS version.
+Some features, such as reading what's playing system-wide or drawing on the lock screen, have no
+public API. Each of them turns itself off cleanly, with an explanation in Settings, if the API is
+unavailable on your version of macOS.
+
+**"When there's room" doesn't work after an update. What do I do?**
+Versions older than 0.2.1 lose the Accessibility permission when they update. Turn Halo on in
+**System Settings → Privacy & Security → Accessibility**, then use **Reopen Halo** in
+**Settings → Island**. If it still doesn't work, remove Halo from the list and add it back. The
+**Open System Settings** button in **Settings → Island** goes straight to the right place.
 
 **How much CPU does it use?**
-Halo is event-driven: it reacts to system notifications instead of polling. At rest it should sit
-at ~0% CPU.
+Halo is event-driven: it reacts to system notifications instead of polling. At rest it sits at
+about 0% CPU and uses around 20 MB of memory.
 
 **How do I report a bug?**
-Open an issue and paste the report from **Settings → Diagnostics → Copy report**.
+Open an issue and paste the report from **Settings → Diagnostics → Copy report**. It contains no
+personal data.
 
 ## Credits
 

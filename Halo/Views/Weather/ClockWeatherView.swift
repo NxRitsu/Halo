@@ -6,12 +6,13 @@ struct ClockWeatherView: View {
 
     var body: some View {
         TimelineView(.everyMinute) { context in
+            let date = Self.displayedDate(context.date)
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(context.date, format: .dateTime.hour().minute())
+                    Text(date, format: .dateTime.hour().minute())
                         .font(.system(size: 34, weight: .semibold, design: .rounded))
                         .monospacedDigit()
-                    Text(context.date, format: .dateTime.weekday(.wide).day().month(.wide))
+                    Text(date, format: .dateTime.weekday(.wide).day().month(.wide))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white.opacity(0.6))
                 }
@@ -28,6 +29,17 @@ struct ClockWeatherView: View {
         }
         // Opening the island is what makes the weather worth refreshing.
         .task { weather.refreshIfNeeded() }
+    }
+}
+
+extension ClockWeatherView {
+    /// The images of the README show the same time as their sample menu bar.
+    static func displayedDate(_ date: Date) -> Date {
+        #if DEBUG
+        VisualScenes.fixedDate ?? date
+        #else
+        date
+        #endif
     }
 }
 
