@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-22
+
 ### Added
 
 - Weather in the expanded island when nothing is playing: current temperature, conditions and the
