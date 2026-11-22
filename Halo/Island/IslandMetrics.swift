@@ -70,7 +70,13 @@ struct IslandMetrics: Equatable {
     /// Height of the alert area below the notch.
     static let alertHeight: CGFloat = 50
 
-    func layout(expanded: Bool, content: IslandContent) -> IslandLayout {
+    /// Height of the AirDrop zone shown while files are dragged over the island.
+    static let dropHeight: CGFloat = 84
+
+    func layout(expanded: Bool, content: IslandContent, drop: IslandDrop? = nil) -> IslandLayout {
+        if drop != nil {
+            return dropLayout
+        }
         if expanded {
             let contentHeight: CGFloat = switch content.expanded {
             case .idle: 96
@@ -85,6 +91,10 @@ struct IslandMetrics: Equatable {
             return wingsLayout
         }
         return base
+    }
+
+    private var dropLayout: IslandLayout {
+        IslandLayout(width: expandedWidth, height: base.height + Self.dropHeight, earRadius: 14, bottomRadius: 32)
     }
 
     private var wingsLayout: IslandLayout {
@@ -114,7 +124,7 @@ struct IslandMetrics: Equatable {
                 layout(expanded: true, content: IslandContent(expanded: activity, showsLyrics: lyrics))
             }
         }
-        let all = expanded + [base, wingsLayout, batteryAlertLayout, bluetoothAlertLayout]
+        let all = expanded + [base, wingsLayout, batteryAlertLayout, bluetoothAlertLayout, dropLayout]
         return IslandLayout(
             width: all.map(\.totalWidth).max() ?? base.totalWidth,
             height: all.map(\.height).max() ?? base.height,

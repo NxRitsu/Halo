@@ -30,7 +30,14 @@ struct IslandView: View {
 
     @ViewBuilder
     private func content(layout: IslandLayout) -> some View {
-        if model.isExpanded {
+        if let drop = model.drop {
+            AirDropZoneView(drop: drop, airDrop: model.airDrop)
+                .padding(.top, model.metrics.base.height + 8)
+                .padding(.horizontal, layout.earRadius + 16)
+                .padding(.bottom, 14)
+                .frame(width: layout.totalWidth, height: layout.height, alignment: .top)
+                .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
+        } else if model.isExpanded {
             Group {
                 switch model.content.expanded {
                 case .nowPlaying:

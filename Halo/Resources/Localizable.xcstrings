@@ -21,12 +21,42 @@
         }
       }
     },
+    "^[%lld file](inflect: true)" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld fichier](inflect: true)"
+          }
+        }
+      }
+    },
     "Adaptive" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adaptatif"
+          }
+        }
+      }
+    },
+    "AirDrop" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirDrop"
+          }
+        }
+      }
+    },
+    "AirDrop isn't available" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirDrop n’est pas disponible"
           }
         }
       }
@@ -137,6 +167,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appareil audio"
+          }
+        }
+      }
+    },
+    "Available" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
           }
         }
       }
@@ -411,12 +451,32 @@
         }
       }
     },
+    "Drop to send with AirDrop" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déposez pour envoyer par AirDrop"
+          }
+        }
+      }
+    },
     "Expand on hover" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agrandir au survol"
+          }
+        }
+      }
+    },
+    "Files are sent from where they are, without a copy. A file that only exists in an app, such as a photo dragged from Photos, is saved temporarily and deleted once AirDrop is done." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fichiers sont envoyés depuis leur emplacement, sans copie. Un fichier qui n’existe que dans une app, comme une photo glissée depuis Photos, est enregistré temporairement puis supprimé une fois l’envoi AirDrop terminé."
           }
         }
       }
@@ -821,6 +881,16 @@
         }
       }
     },
+    "Not available on this Mac" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indisponible sur ce Mac"
+          }
+        }
+      }
+    },
     "Not supported on this Mac" : {
       "localizations" : {
         "fr" : {
@@ -1061,6 +1131,16 @@
         }
       }
     },
+    "Send files with AirDrop when you drop them on the island" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer par AirDrop les fichiers déposés sur l’île"
+          }
+        }
+      }
+    },
     "Services" : {
       "localizations" : {
         "fr" : {
@@ -1227,6 +1307,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le rapport indique le modèle de votre Mac, la version de macOS, vos écrans, les réglages de %@ et l’état de ses services. Il ne contient ni morceau, ni chemin de fichier, ni position. Rien n’est envoyé : il est seulement copié dans le presse-papiers."
+          }
+        }
+      }
+    },
+    "This Mac can't send files with AirDrop." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Mac ne peut pas envoyer de fichiers par AirDrop."
           }
         }
       }

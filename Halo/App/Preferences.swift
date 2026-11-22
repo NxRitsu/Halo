@@ -22,6 +22,7 @@ enum PreferenceKey {
     static let bluetoothDisconnectAlertsEnabled = "bluetoothDisconnectAlertsEnabled"
     static let weatherEnabled = "weatherEnabled"
     static let temperatureUnit = "temperatureUnit"
+    static let airDropEnabled = "airDropEnabled"
 }
 
 /// Which displays show an island.
@@ -66,6 +67,7 @@ enum Preferences {
             PreferenceKey.bluetoothDisconnectAlertsEnabled: true,
             PreferenceKey.weatherEnabled: true,
             PreferenceKey.temperatureUnit: TemperatureUnit.system.rawValue,
+            PreferenceKey.airDropEnabled: true,
         ]
     }
 
@@ -135,5 +137,9 @@ enum Preferences {
 
     static var temperatureUnit: TemperatureUnit {
         TemperatureUnit(rawValue: UserDefaults.standard.string(forKey: PreferenceKey.temperatureUnit) ?? "") ?? .system
+    }
+
+    static var airDropEnabled: Bool {
+        UserDefaults.standard.bool(forKey: PreferenceKey.airDropEnabled)
     }
 }

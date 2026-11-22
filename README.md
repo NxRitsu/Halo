@@ -2,13 +2,14 @@
 
 **A Dynamic Island for your Mac's notch.** Halo turns the area around the MacBook notch into a
 living, glanceable island: what's playing, synced lyrics, battery and AirPods alerts, weather,
-a file tray and more. On Macs without a notch, or on external displays, Halo draws a virtual
+AirDrop by dropping files on the notch, and more. On Macs without a notch, or on external displays, Halo draws a virtual
 island at the top of the screen.
 
 Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-driven, ~0% CPU at rest.
 
 > 🇫🇷 **En bref :** Halo transforme la zone de l'encoche du MacBook en « île dynamique » :
-> lecture en cours, paroles synchronisées, alertes batterie et AirPods, météo, bac à fichiers…
+> lecture en cours, paroles synchronisées, alertes batterie et AirPods, météo, AirDrop en déposant
+> des fichiers sur l'encoche…
 > Sur les Mac sans encoche et les écrans externes, une île virtuelle s'affiche en haut de l'écran.
 > Gratuit, open source, natif et léger. Interface en anglais et en français.
 
@@ -30,7 +31,7 @@ Halo is free, open source (MIT) and lightweight: native Swift/SwiftUI, event-dri
 | ✅ | Battery and charging alerts |
 | ✅ | AirPods and Bluetooth audio alerts with battery levels, volume and listening mode |
 | ✅ | Weather |
-| 🚧 | File tray (drag and drop, Quick Look, AirDrop) |
+| ✅ | AirDrop: drop files on the notch to send them |
 | 🚧 | Audio output picker |
 
 ## Requirements
@@ -75,7 +76,10 @@ leave your Mac, and all of them can be disabled:
 | Weather ([Open-Meteo](https://open-meteo.com)) | Approximate location (reduced accuracy, coordinates rounded to about 1 km) | To show the current weather |
 | Updates ([GitHub](https://github.com/NxRitsu/Halo/releases)) | Nothing but the request itself, which reveals your IP address to GitHub, like any download | To find and download new versions |
 
-Everything else (media info, battery, Bluetooth, files) stays on your Mac.
+Everything else (media info, battery, Bluetooth, files) stays on your Mac. Files you drop on the
+island go through AirDrop only, to the device you pick. Halo doesn't keep them: a file that only
+exists inside an app, such as a photo dragged from Photos, is saved temporarily and deleted once
+AirDrop is done.
 
 Halo only asks for the Accessibility permission if you choose to show playback around the notch
 "when there's room". It then reads the position of menu bar items, not their titles or anything

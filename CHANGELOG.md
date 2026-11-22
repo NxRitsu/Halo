@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mac wakes, when it moves far enough, and when the weather comes on screen, at most every 30 minutes
   otherwise.
 - A Weather settings tab, and the state of the weather and location in Diagnostics.
+- AirDrop from the notch: drag files onto the island and it turns into a drop zone; release them to
+  open the AirDrop window. Works with files from the Finder and with items dragged from apps such
+  as Photos or Safari. It can be turned off in Settings → Island.
 
 ## [0.2.1] - 2026-11-02
 

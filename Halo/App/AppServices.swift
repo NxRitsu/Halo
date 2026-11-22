@@ -11,6 +11,7 @@ final class AppServices {
     let bluetooth = BluetoothAudioService()
     let menuBar = MenuBarSpaceMonitor()
     let weather = WeatherService()
+    let airDrop = AirDropService()
     let activities: ActivityCoordinator
     let updates = UpdateService()
 
@@ -26,6 +27,7 @@ final class AppServices {
         battery.criticalThreshold = Preferences.criticalBatteryThreshold
         bluetooth.setEnabled(Preferences.bluetoothAudioEnabled)
         weather.setEnabled(Preferences.weatherEnabled)
+        airDrop.start()
         activities.showsLowBatteryIndicator = Preferences.lowBatteryIndicator
         activities.mediaWingsMode = Preferences.mediaWingsMode
         updates.start()

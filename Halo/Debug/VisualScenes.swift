@@ -35,6 +35,10 @@ enum VisualScenes {
         case "weather":
             services.showSampleWeather()
             view = AnyView(WeatherScene(island: services.island(metrics, expanded: true, content: IslandContent(expanded: .idle))))
+        case "airdrop":
+            let island = services.island(metrics, expanded: false, content: IslandContent())
+            island.drop = .ready(fileCount: 3)
+            view = AnyView(AirDropScene(island: island))
         default:
             print("Unknown scene: \(name)")
             exit(1)
@@ -51,6 +55,18 @@ enum VisualScenes {
         self.window = window
         print("window=\(window.windowNumber)")
         fflush(stdout)
+
+        // Writes the scene to a file, for when screen recording isn't allowed.
+        if let output = ProcessInfo.processInfo.environment["HALO_VISUAL_SCENE_PNG"] {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1))
+                if let bitmap = hosting.bitmapImageRepForCachingDisplay(in: hosting.bounds) {
+                    hosting.cacheDisplay(in: hosting.bounds, to: bitmap)
+                    try? bitmap.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: output))
+                }
+                exit(0)
+            }
+        }
     }
 }
 
@@ -61,13 +77,14 @@ private final class SampleServices {
     let battery = BatteryService()
     let bluetooth = BluetoothAudioService()
     let weather = WeatherService()
+    let airDrop = AirDropService()
 
     init() {
         lyrics = LyricsService(nowPlaying: nowPlaying)
     }
 
     func island(_ metrics: IslandMetrics, expanded: Bool, content: IslandContent) -> IslandModel {
-        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth, weather: weather)
+        let model = IslandModel(metrics: metrics, content: content, nowPlaying: nowPlaying, lyrics: lyrics, battery: battery, bluetooth: bluetooth, weather: weather, airDrop: airDrop)
         model.isExpanded = expanded
         return model
     }
@@ -209,6 +226,17 @@ private struct BluetoothScene: View {
                     .foregroundStyle(.white.opacity(0.75))
                     .padding(.bottom, 44)
             }
+        }
+        .frame(width: 1200, height: 400)
+    }
+}
+
+private struct AirDropScene: View {
+    let island: IslandModel
+
+    var body: some View {
+        SceneBackdrop(island: island, scale: 1.6) {
+            Spacer(minLength: 0)
         }
         .frame(width: 1200, height: 400)
     }

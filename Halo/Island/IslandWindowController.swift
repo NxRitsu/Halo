@@ -16,12 +16,17 @@ import SwiftUI
 /// Resizing the panel rebuilds its tracking area, which can emit a spurious "exited" event while
 /// the cursor is still inside. So once expanded, the island decides when to collapse from the
 /// actual cursor position, using mouse-moved monitors that only exist while it is expanded.
+///
+/// Files dragged over the island turn it into an AirDrop zone. Mouse events don't reach the panel
+/// during a drag, so the drag callbacks drive this state instead of the hover ones.
 @MainActor
 final class IslandWindowController {
     private static let expandAnimation = Animation.spring(response: 0.42, dampingFraction: 0.78)
     private static let collapseAnimation = Animation.spring(response: 0.36, dampingFraction: 0.9)
     private static let collapseDelay: Duration = .milliseconds(120)
     private static let contentAnimation = Animation.spring(response: 0.45, dampingFraction: 0.8)
+    /// Resizing the panel can report the drag as leaving while the cursor is still over it.
+    private static let dropExitDelay: Duration = .milliseconds(150)
 
     let displayID: CGDirectDisplayID
     private let panel: IslandPanel
@@ -31,12 +36,14 @@ final class IslandWindowController {
     private var isHidden = false
     private var mouseMonitors: [Any] = []
     private let activities: ActivityCoordinator
+    private let airDrop: AirDropService
     /// Identifies the latest transition, so that only its completion resizes the panel.
     private var transitionID = 0
 
     init(screen: NSScreen, displayID: CGDirectDisplayID, services: AppServices) {
         self.displayID = displayID
         activities = services.activities
+        airDrop = services.airDrop
         let metrics = IslandMetrics(screen: screen)
         model = IslandModel(
             metrics: metrics,
@@ -45,17 +52,19 @@ final class IslandWindowController {
             lyrics: services.lyrics,
             battery: services.battery,
             bluetooth: services.bluetooth,
-            weather: services.weather
+            weather: services.weather,
+            airDrop: services.airDrop
         )
         panel = IslandPanel(contentRect: metrics.windowFrame(for: model.layout))
 
         hostingView = IslandHostingView(rootView: IslandView(model: model))
         hostingView.translatesAutoresizingMaskIntoConstraints = true
-        let container = NSView(frame: NSRect(origin: .zero, size: panel.frame.size))
+        let container = IslandDropView(frame: NSRect(origin: .zero, size: panel.frame.size))
         container.autoresizesSubviews = false
         container.addSubview(hostingView)
         panel.contentView = container
         setPanelFrame(panel.frame)
+        observeDrags(on: container)
 
         hostingView.onHoverChange = { [weak self] inside in
             self?.hoverChanged(inside)
@@ -103,13 +112,18 @@ final class IslandWindowController {
 
     /// Animates the island to a new state. The panel covers both states during the animation.
     private func transition(expanded: Bool, content: IslandContent, animation: Animation) {
-        let target = model.metrics.windowFrame(for: model.metrics.layout(expanded: expanded, content: content))
+        transition(expanded: expanded, content: content, drop: model.drop, animation: animation)
+    }
+
+    private func transition(expanded: Bool, content: IslandContent, drop: IslandDrop?, animation: Animation) {
+        let target = model.metrics.windowFrame(for: model.metrics.layout(expanded: expanded, content: content, drop: drop))
         transitionID += 1
         let id = transitionID
         setPanelFrame(panel.frame.union(target))
         withAnimation(animation) {
             model.isExpanded = expanded
             model.content = content
+            model.drop = drop
         } completion: { [weak self] in
             guard let self, self.transitionID == id else { return }
             self.setPanelFrame(target)
@@ -149,6 +163,7 @@ final class IslandWindowController {
             cancelPendingTransition()
             stopMouseMonitors()
             model.isExpanded = false
+            model.drop = nil
             transitionID += 1
             setPanelFrame(model.metrics.windowFrame(for: model.layout))
             panel.orderOut(nil)
@@ -166,6 +181,7 @@ final class IslandWindowController {
     // MARK: - Expansion
 
     private func hoverChanged(_ inside: Bool) {
+        guard model.drop == nil else { return }
         // While expanded, collapsing is driven by `mouseMoved()`, not by tracking area events.
         guard !model.isExpanded else {
             if inside { cancelPendingTransition() }
@@ -225,6 +241,57 @@ final class IslandWindowController {
         guard model.isExpanded else { return }
         stopMouseMonitors()
         transition(expanded: false, content: model.content, animation: Self.collapseAnimation)
+    }
+
+    // MARK: - AirDrop
+
+    private func observeDrags(on view: IslandDropView) {
+        view.onEnter = { [weak self] info in
+            self?.dragEntered(info) ?? []
+        }
+        view.onExit = { [weak self] in
+            self?.dragExited()
+        }
+        view.onDrop = { [weak self] info in
+            self?.dropped(info) ?? false
+        }
+        view.onEnd = { [weak self] in
+            self?.endDrop()
+        }
+    }
+
+    private func dragEntered(_ info: NSDraggingInfo) -> NSDragOperation {
+        guard Preferences.airDropEnabled, !isHidden else { return [] }
+        let count = AirDropService.fileCount(in: info.draggingPasteboard)
+        guard count > 0 else { return [] }
+        cancelPendingTransition()
+        let drop: IslandDrop = airDrop.isAvailable ? .ready(fileCount: count) : .unavailable
+        if model.drop != drop {
+            transition(expanded: model.isExpanded, content: model.content, drop: drop, animation: Self.expandAnimation)
+        }
+        return drop == .unavailable ? [] : .copy
+    }
+
+    private func dragExited() {
+        guard model.drop != nil else { return }
+        schedule(after: Self.dropExitDelay) { controller in
+            if !controller.isMouseInside { controller.endDrop() }
+        }
+    }
+
+    private func dropped(_ info: NSDraggingInfo) -> Bool {
+        guard case .ready = model.drop else { return false }
+        airDrop.send(from: info.draggingPasteboard)
+        endDrop()
+        return true
+    }
+
+    /// Back to the compact island: after a drop, the AirDrop window takes over.
+    private func endDrop() {
+        guard model.drop != nil else { return }
+        cancelPendingTransition()
+        stopMouseMonitors()
+        transition(expanded: false, content: model.content, drop: nil, animation: Self.collapseAnimation)
     }
 
     // MARK: - Mouse monitors (only while expanded)

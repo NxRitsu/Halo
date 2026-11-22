@@ -32,6 +32,7 @@ enum DiagnosticsReport {
             updatesStatus(services.updates),
             bluetoothStatus(services.bluetooth),
             weatherStatus(services.weather),
+            airDropStatus(services.airDrop),
         ]
     }
 
@@ -181,6 +182,18 @@ enum DiagnosticsReport {
         }
     }
 
+    private static func airDropStatus(_ airDrop: AirDropService) -> ServiceStatus {
+        let title: LocalizedStringResource = "AirDrop"
+        let name = "AirDrop"
+        if !Preferences.airDropEnabled {
+            return ServiceStatus(title: title, detail: "Disabled", level: .neutral, reportName: name, reportValue: "disabled")
+        }
+        if airDrop.isAvailable {
+            return ServiceStatus(title: title, detail: "Available", level: .ok, reportName: name, reportValue: "available")
+        }
+        return ServiceStatus(title: title, detail: "Not available on this Mac", level: .warning, reportName: name, reportValue: "unavailable")
+    }
+
     // MARK: - Report details
 
     private static var settings: [(name: String, value: String)] {
@@ -197,6 +210,7 @@ enum DiagnosticsReport {
             ("Bluetooth disconnection alerts", onOff(Preferences.bluetoothDisconnectAlertsEnabled)),
             ("Weather", onOff(Preferences.weatherEnabled)),
             ("Temperature unit", Preferences.temperatureUnit.rawValue),
+            ("AirDrop on drop", onOff(Preferences.airDropEnabled)),
         ]
     }
 

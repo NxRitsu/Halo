@@ -118,6 +118,7 @@ private struct IslandSettingsView: View {
     @AppStorage(PreferenceKey.hoverDelay) private var hoverDelay = 0.15
     @AppStorage(PreferenceKey.hideInFullScreen) private var hideInFullScreen = true
     @AppStorage(PreferenceKey.mediaWingsMode) private var mediaWingsMode = MediaWingsMode.always
+    @AppStorage(PreferenceKey.airDropEnabled) private var airDropEnabled = true
     private let activities = AppServices.shared.activities
     private let menuBar = AppServices.shared.menuBar
 
@@ -172,6 +173,13 @@ private struct IslandSettingsView: View {
                 }
             } footer: {
                 Text("“When there's room” keeps the island at the size of the notch, low battery indicator included, whenever it would cover menu bar items. It uses the Accessibility permission to read the position of these items, nothing else. The player stays available by expanding the island.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section {
+                Toggle("Send files with AirDrop when you drop them on the island", isOn: $airDropEnabled)
+            } footer: {
+                Text("Files are sent from where they are, without a copy. A file that only exists in an app, such as a photo dragged from Photos, is saved temporarily and deleted once AirDrop is done.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
